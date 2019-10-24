@@ -1,0 +1,24 @@
+INSERT [dbo].[Role] ([Id], [Name]) VALUES (convert(varchar(128),NEWID()), N'Administrator')
+INSERT [dbo].[Role] ([Id], [Name]) VALUES (convert(varchar(128),NEWID()), N'Student')
+INSERT [dbo].[Role] ([Id], [Name]) VALUES (convert(varchar(128),NEWID()), N'Teacher')
+go
+----------------------------------------------------------------------------------------------------
+
+declare @userId varchar(128) = convert(varchar(128),NEWID())	
+declare @roleId varchar(128)
+	
+INSERT [dbo].[User] 
+([Id], [Firstname], [Lastname], [DateBirth], [Gender], [NationalId], [Email], [PasswordHash],[PhoneNumber],[UserName]) 
+VALUES 
+(@userId, N'Mahmoud', N'El Torri', CAST(N'1991-07-20' AS DateTime), N'M', N'29107201700955', N'Admin@DSmartQB.com', CONVERT(nvarchar(MAX), EncryptByPassPhrase('redhat@ib2020',N'$tr0ngP@ssw0rd!')), N'01159313034',N'DSmartQB_Admin')
+
+select @roleId = [Id] from [dbo].[Role] where [Name] = N'Administrator'
+INSERT [dbo].[UserRole] ([UserId], [RoleId]) VALUES (@userId,@roleId)
+Go
+
+----------------------------------------------------------------------------------------------------
+
+insert into [dbo].[ItemType]
+values (newid(),CONVERT(nvarchar(MAX), EncryptByPassPhrase('redhat@ib2020',N'MCQ')))
+,(newid(),CONVERT(nvarchar(MAX), EncryptByPassPhrase('redhat@ib2020',N'MRQ')))
+,(newid(),CONVERT(nvarchar(MAX), EncryptByPassPhrase('redhat@ib2020',N'TF')))
