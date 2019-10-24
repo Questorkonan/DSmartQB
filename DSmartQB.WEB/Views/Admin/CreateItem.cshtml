@@ -1,0 +1,454 @@
+﻿
+@{
+    ViewBag.Title = "CreateItem";
+}
+
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="page-header">
+        <h1 class="page-title">
+            Item
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body o-auto">
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+
+                    <form name="addItem" novalidate>
+
+                        <div class="form-group">
+                            <label><b>Type</b></label>
+
+                            <select class="form-control col-3" ng-model="question.type" ng-change="drawAnswers(question.type)"
+                                    data-ng-options="t as t.Type for t in types">
+                                <option value="">Select Type</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label><b>Question</b></label>
+                            <ng-ckeditor id="test" name="item" ng-model="question.item"
+                                         ng-config="config"></ng-ckeditor>
+                        </div>
+
+
+                        <div class="form-group" ng-if="dispacher == 'MCQ'">
+                            <label></label>
+
+                            <div class="table-responsive">
+                                <table class="table card-table table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th>Correct</th>
+                                            <th>
+                                                Answer
+                                            </th>
+                                            <th>
+                                                <button class="btn btn-sm btn-primary" ng-click="addAnswer()"><span class="fe fe-plus"></span></button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="ans in mcq">
+                                            <td>
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" name="correct" ng-model="ans.correct" ng-click="updateSelection($index, mcq);$event.stopPropagation()">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+
+                                            </td>
+                                            <td>
+                                                <ng-ckeditor id="test" ng-model="ans.Text"
+                                                             ng-config="config"></ng-ckeditor>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger" ng-click="removeAnswer($index)"><span class="fe fe-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="dispacher == 'MRQ'">
+                            <label></label>
+
+                            <div class="table-responsive">
+                                <table class="table card-table table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th>Correct</th>
+                                            <th>
+                                                Answer
+                                            </th>
+                                            <th>
+                                                <button class="btn btn-sm btn-primary" ng-click="addAnswer()"><span class="fe fe-plus"></span></button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="ans in mcq">
+                                            <td>
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" name="correct" ng-model="ans.correct">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+
+                                            </td>
+                                            <td>
+                                                <ng-ckeditor id="test" ng-model="ans.Text"
+                                                             ng-config="config"></ng-ckeditor>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger" ng-click="removeAnswer($index)"><span class="fe fe-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="dispacher == 'TF'">
+                            <label></label>
+
+                            <label class="custom-switch">
+                                <input type="checkbox" name="tf" class="custom-switch-input" ng-model="tf" ng-change="changeVal(tf)">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description"></span>
+                            </label>
+
+                        </div>
+
+                        <div ng-if="dispacher != ''">
+
+                            <div class="form-group">
+                                <label><b>Duration</b></label>
+                                <input type="number" min="2" class="form-control col-2" placeholder="Duration" name="duration" ng-model="question.duration">
+                            </div>
+
+                            <div class="form-group">
+                                <div class="form-label">Level <small> (mild , normal and strong)</small></div>
+                                <div class="custom-controls-stacked">
+                                    <label class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Mild" checked="">
+                                        <span class="custom-control-label">Mild</span>
+                                    </label>
+                                    <label class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Normal">
+                                        <span class="custom-control-label">Normal</span>
+                                    </label>
+                                    <label class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Strong">
+                                        <span class="custom-control-label">Strong</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Course</b></label>
+                                <select class="form-control col-3" ng-model="Course" ng-change="drawPlanner(Course)"
+                                        data-ng-options="t as t.Name for t in courses">
+                                    <option value="">Select Course</option>
+                                </select>
+                            </div>
+                            <div ng-if="dynamic">
+                                <div class="form-group">
+                                    <label><b>Chapter</b></label>
+                                    <select class="form-control col-3" ng-model="Lesson" ng-change="drawILO(Lesson)"
+                                            data-ng-options="t as t.Name for t in lessons">
+                                        <option value="">Select Lesson</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><b>ILO</b></label>
+                                    <select class="form-control col-3" ng-model="question.ilo">
+                                        <option ng-repeat="ilo in ilos" value="{{ilo.Id}}">{{ilo.Text}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary ml-auto" ng-click="addQuestion(question)">Add Question</button>
+
+                        </div>
+
+
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script>
+       var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ng.ckeditor']);
+    app.controller('myCtrl', function ($scope, $http) {
+
+        $scope.dispacher = '';
+        $scope.loading = false;
+        $scope.config = {};
+        $scope.config.toolbarGroups = [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'clipboard', groups: ['clipboard', 'undo'] },
+            { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+            { name: 'forms', groups: ['forms'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph'] },
+            { name: 'links', groups: ['links'] },
+            { name: 'insert', groups: ['insert'] },
+            { name: 'styles', groups: ['styles'] },
+            { name: 'colors', groups: ['colors'] },
+            { name: 'document', groups: ['mode', 'document', 'doctools'] },
+            { name: 'tools', groups: ['tools'] },
+            { name: 'others', groups: ['others'] },
+            { name: 'about', groups: ['about'] }
+        ];
+        $scope.config.removeButtons = 'BGColor,Anchor,Subscript,Superscript,Paste,Copy,Cut,Undo,Redo';
+
+
+
+        $scope.types = [];
+
+        $scope.loadTypes = function () {
+            $scope.loading = true;
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ItemTypes',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.types = res.data;
+                $scope.loading = false;
+                console.log($scope.types)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadTypes();
+
+        $scope.question = {
+            'type': '',
+            'item': '',
+            'level': 'Mild',
+            'ilo': '',
+            'duration' : 2
+        }
+
+        $scope.updateSelection = function (position, entities) {
+            angular.forEach(entities, function (subscription, index) {
+                if (position != index)
+                    subscription.correct = false;
+            });
+        }
+
+
+        $scope.addAnswer = function () {
+            $scope.mcq.push({ Text: '', correct: false })
+        }
+
+        $scope.removeAnswer = function (idx) {
+            var index = $scope.mcq.indexOf(idx);
+            $scope.mcq.splice(index, 1);
+        }
+
+
+        $scope.tf = false;
+
+        $scope.changeVal = function (val) {
+            $scope.tf = val;
+        }
+
+        $scope.drawAnswers = function (e) {
+
+            if (e == null) {
+
+                $scope.mcq = [];
+
+                $scope.tf = false;
+
+                $scope.dispacher = '';
+
+            }
+            else if (e.Type == "TF") {
+
+                $scope.mcq = [];
+
+                $scope.dispacher = 'TF';
+            }
+            else if (e.Type == "MRQ") {
+
+                $scope.mcq = [
+                    { Text: '', correct: false },
+                    { Text: '', correct: false },
+                    { Text: '', correct: false },
+                    { Text: '', correct: false }
+                ];
+
+                $scope.dispacher = 'MRQ';
+            }
+            else if (e.Type == "MCQ") {
+
+                $scope.mcq = [
+                    { Text: '', correct: false },
+                    { Text: '', correct: false },
+                    { Text: '', correct: false },
+                    { Text: '', correct: false }
+                ];
+                $scope.dispacher = 'MCQ';
+            }
+
+        }
+
+
+        $scope.dynamic = false;
+
+
+        $scope.courses = [];
+        $scope.loadCourses = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadCourses',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.courses = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadCourses();
+        $scope.Course = {};
+        $scope.Lesson = {};
+
+        $scope.lessons = [];
+        $scope.loadLessons = function (id) {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListPlanners/' + id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.lessons = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+
+        $scope.drawPlanner = function (e) {
+            if (e == null) {
+                $scope.dynamic = false;
+            } else {
+                $scope.dynamic = true;
+                $scope.loadLessons(e.Id);
+            }
+        }
+
+        $scope.iloNonChoosen = false;
+        $scope.ILO = {};
+        $scope.ilos = [];
+
+        $scope.loadIlos = function (id) {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadIlos/' + id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.ilos = res.data;
+                console.log($scope.ilos)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+        $scope.drawILO = function (e) {
+            if (e == null) {
+                $scope.iloNonChoosen = false;
+            } else {
+                $scope.iloNonChoosen = true;
+                $scope.loadIlos(e.Id);
+            }
+        }
+
+        var ans;
+
+
+        $scope.addQuestion = function (ques) {
+            if (ques.item == '') {
+                toastr.error('Question is required', 'DSmartQB')
+            }
+            else {
+
+                $scope.question.TFStatus = '';
+
+                if ($scope.dispacher == 'TF') {
+                    $scope.question.TFStatus = $scope.tf
+                }
+                else {
+
+                }
+
+                $scope.question.userId = user.id;
+
+                var model = {
+                    'Question': $scope.question,
+                    'Alternatives': $scope.mcq
+                }
+
+
+                var req = {
+                    method: 'POST',
+                    url: apiurl + "AddItem",
+                    headers: config.headers,
+                    data: model
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    location.href = '@Url.Action("Item")';
+
+                    $scope.loadCourses();
+
+                }, function (err) {
+                    console.log(err.data.Message)
+                    toastr.error(err.data.Message, "DSmartQB.")
+                });
+            }
+        }
+ 
+           
+          
+    });
+
+
+</script>
+

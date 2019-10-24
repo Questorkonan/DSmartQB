@@ -1,0 +1,529 @@
+﻿
+@{
+    ViewBag.Title = "EditSubject";
+}
+<style>
+    .selectTab {
+        background: rgba(70, 127, 207, 0.06);
+        font-weight: 600;
+    }
+</style>
+<div class="row" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="col-md-2">
+        <h3 class="page-title mb-5 text-indigo">[{{basic.Name}}]</h3>
+        <div>
+            <div class="list-group list-group-transparent mb-0">
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex align-items-center" ng-class="{'selectTab': activate == 1}" ng-click="selectedTab(1)">
+                    <span class="icon mr-3"><i class="fe fe-inbox"></i></span>Basic Info
+                </a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex align-items-center" ng-class="{'selectTab': activate == 2}" ng-click="selectedTab(2)">
+                    <span class="icon mr-3"><i class="fe fe-send"></i></span>Planner <span class="ml-auto badge badge-primary">{{planners.length}}</span>
+                </a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex align-items-center" ng-class="{'selectTab': activate == 3}" ng-click="selectedTab(3)">
+                    <span class="icon mr-3"><i class="fe fe-alert-circle"></i></span>ILO <span class="ml-auto badge badge-secondary">{{ilos.length}}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="card" ng-if="activate == 1">
+            <div class="card-header">
+                <h3 class="card-title">Basic Informations</h3>
+            </div>
+            <div class="card-body">
+                <form name="basicInfo" novalidate>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <input type="hidden" name="Id" ng-model="basic.Id" />
+                            <div class="form-group">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" placeholder="Name" name="Name" ng-model="basic.Name" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Code</label>
+                                <input type="text" class="form-control" placeholder="Code" name="Code" ng-model="basic.Code" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Hours</label>
+                                <input type="number" min="1" class="form-control" placeholder="Hours" name="Hours" ng-model="basic.Hourse" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Marks</label>
+                                <input type="number" min="10" class="form-control" placeholder="Marks" name="Marks" ng-model="basic.Marks" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary" ng-disabled="basicInfo.$invalid" ng-click="saveBasic(basic)">Save Informations</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card" ng-if="activate == 2">
+            <div class="card-header">
+                <h3 class="card-title">Planner</h3>
+            </div>
+            <div class="card-body">
+                <form name="plannerCourse" novalidate>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+
+                                <div class="table-responsive">
+                                    <table class="table card-table table-striped table-vcenter">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>
+                                                    <a class="btn btn-sm btn-primary" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="fe fe-plus"></i></a>
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="pln in planners">
+                                                <td>
+                                                    <input type="text" ng-model="pln.Name" name="Name" class="form-control" />
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" ng-click="editPlanner(pln)"><span class="fe fe-edit"></span></button> &nbsp;
+                                                    <button class="btn btn-sm btn-danger" ng-click="deletePlanner(pln)"><span class="fe fe-trash"></span></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card" ng-if="activate == 3">
+            <div class="card-header">
+                <h3 class="card-title">ILO</h3>
+            </div>
+            <div class="card-body">
+
+                <form name="plannerCourse" novalidate>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="form-label"></label>
+
+                                <div class="table-responsive">
+                                    <table class="table card-table table-striped table-vcenter">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Planner</th>
+                                                <th>Congitive</th>
+                                                <th>
+                                                    <a class="btn btn-sm btn-primary" href="javascript:void(0)" data-toggle="modal" data-target="#iloModal"><i class="fe fe-plus"></i></a>
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="ilo in ilos">
+                                                <td>
+                                                    <input type="hidden" name="Id" ng-model="ilo.Id"/>
+                                                    <input type="text" ng-model="ilo.Text" name="Name" class="form-control" />
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="Congitive" ng-model="ilo.CongitiveId" required>
+                                                        <option ng-repeat="con in congitives" value="{{con.Id}}">{{con.Name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control" name="Planner" ng-model="ilo.PlannerId" required>
+                                                        <option ng-repeat="pln in planners" value="{{pln.Id}}">{{pln.Name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" ng-click="editIlo(ilo)"><span class="fe fe-edit"></span></button> &nbsp;
+                                                    <button class="btn btn-sm btn-danger" ng-click="deleteIlo(ilo)"><span class="fe fe-trash"></span></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Planner</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="mannual" novalidate>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-modx"></i>
+                                </span>
+                                <input type="text" class="form-control" name="planner" placeholder="planner" ng-model="plannerName" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="addPlanner(plannerName)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="iloModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create ILO</h5>
+                </div>
+                <div class="modal-body">
+
+
+                    <form name="iloInfo" novalidate>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-5">
+                                <div class="form-group">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" placeholder="Name" name="Name" ng-model="iloObj.Name" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label">Congitive</label>
+                                    <select class="form-control" name="Congitive" ng-model="iloObj.Congitive" required>
+                                        <option ng-repeat="con in congitives" value="{{con.Id}}">{{con.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+
+                                    <label class="form-label">Planner</label>
+                                    <select class="form-control" name="Planner" ng-model="iloObj.Planner" required>
+                                        <option ng-repeat="pln in planners" value="{{pln.Id}}">{{pln.Name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" ng-disabled="iloInfo.$invalid" ng-click="saveIlo(iloObj)">Save ILO</button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+    </div>
+
+</div>
+    </div>
+<script>
+       var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+    var app = angular.module("myApp", []);
+    app.controller('myCtrl', function ($scope, $http) {
+
+        $scope.subject = JSON.parse(sessionStorage.subject);
+        $scope.activate = 1;
+        $scope.planners = [];
+        $scope.congitives = [];
+        $scope.ilos = [];
+        $scope.plannerName = '';
+        //Load basic 
+
+        $scope.loadBasic = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'BasicInformations/' + $scope.subject.Id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.basic = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadBasic();
+
+
+        //Load Planners 
+
+        $scope.loadPlanners = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListPlanners/' + $scope.subject.Id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.planners = res.data;
+                console.log($scope.planners)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadPlanners();
+
+
+        $scope.loadCongitives = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListCongitives',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.congitives = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadCongitives();
+
+        //Load ILos 
+
+        $scope.loadIlos = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListIlos/' + $scope.subject.Id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.ilos = res.data;
+                console.log($scope.ilos)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadIlos();
+
+        $scope.selectedTab = function (index) {
+            $scope.activate = index;
+            if (index == 1) {
+                $scope.loadBasic();
+            }
+            else if (index == 2) {
+                $scope.loadPlanners();
+            } else if (index == 3) {
+                $scope.loadIlos();
+            }
+        }
+
+
+        $scope.saveBasic = function (basic) {
+
+            var model = {
+                'Id': basic.Id,
+                'Name': basic.Name,
+                'Code': basic.Code,
+                'Hourse': basic.Hourse,
+                'Marks': basic.Marks,
+            }
+
+            console.log(model)
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "EditSubject",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")               
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+        $scope.editPlanner = function (pln) {
+
+            var model = {
+                'Id': pln.Id,
+                'Name': pln.Name
+            }
+
+            console.log(model)
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpldatePlanner",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+                $scope.identity = res.data.ReturnId
+                $scope.planner = true;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.editIlo = function (res) {
+
+            var model = res
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpdateIlo",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.saveIlo = function (ilo) {
+
+            var model = {
+                'Text': ilo.Name,
+                'CongitiveId': ilo.Congitive,
+                'PlannerId': ilo.Planner
+            }
+
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AddILO",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+                $scope.iloObj = {};
+                $scope.loadIlos();
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.deletePlanner = function (pln) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeletePlanner/" + pln.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.loadPlanners();
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+        $scope.deleteIlo = function (ilo) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteIlo/" + ilo.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.loadIlos();
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+        $scope.addPlanner = function (plnName) {
+
+            var model = {
+                'CourseId': $scope.subject.Id,
+                'Name': plnName
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AddPlanner",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+                $scope.loadPlanners();
+                $scope.plannerName = ""
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+    })
+</script>

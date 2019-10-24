@@ -1,0 +1,437 @@
+﻿
+@{
+    ViewBag.Title = "Group";
+}
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div class="page-header">
+        <h1 class="page-title">
+            Group
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary btn-spacey dropdown-toggle" data-toggle="dropdown">
+                            Add Group
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
+                        </div>
+
+                    </div>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+                    <ul class="list-unstyled list-separated">
+                        <li class="list-separated-item" ng-repeat="grp in Groups">
+                            <div class="row align-items-center">
+
+                                <div class="col">
+                                    <div>
+                                        <a href="javascript:void(0)" class="text-inherit">{{grp.Name}}</a>
+                                    </div>
+                                    <small class="d-block item-except text-sm text-muted h-1x">{{grp.CreatedBy}}</small>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#assignModal" ng-click="assignGroup(grp)"><i class="dropdown-icon fe fe-external-link"></i> Assign </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(grp)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteGroup(grp)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    @*Create Group*@
+
+    <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Group</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="mannual" novalidate>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-modx"></i>
+                                </span>
+                                <input type="text" class="form-control" name="group" placeholder="group" ng-model="grp.Name" required>
+                            </div>
+                            @*<label style="margin-top: 6px;">
+                                    <span class="text-danger" ng-show="(mannual.group.$touched || mannual.group.$dirty) && mannual.group.$invalid">
+                                        <span ng-show="mannual.group.$error.required">Name is required</span>
+                                    </span>
+                                </label>*@
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="saveCreate(grp)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*Upload Group*@
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Group</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="attachForm" novalidate>
+                        <div class="form-group">
+                            <label></label>
+                            <a href='@Url.Content("~/Template/Group.xlsx")'>
+
+                                <b><span class="fe fe-download"></span> Download</b>
+                            </a>
+                        </div>
+                        <div class="form-group">
+                            <label></label>
+
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" ngf-select ng-model="grpFile" name="groupTemplate" required>
+                                <label class="custom-file-label">Choose file</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="attachForm.$invalid" ng-click="addBulk(grpFile)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @*Update Group*@
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update <span class="text-indigo">[{{grp.Name}}]</span></h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="update" novalidate>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-modx"></i>
+                                </span>
+                                <input type="text" class="form-control" name="group" placeholder="group" ng-model="grp.Name" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="update.$invalid" ng-click="edit(grp)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Students to <span class="text-indigo">[{{grp.Name}}]</span></h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="update" novalidate>
+                        <div class="form-group">
+                            <label></label>
+                            <input type="hidden" name="GrpId" ng-model="grp.Id"/>
+
+                            <div class="table-responsive" style="overflow-y: scroll;height: 400px;">
+                                <table class="table card-table table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>
+                                                Student
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="std in students">
+                                            <td>
+
+                                                <input type="checkbox"  checklist-model="checked" name="Id" checklist-value="std.Id">
+
+                                            </td>
+                                            <td>
+                                                {{std.Fullname}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary"  ng-disabled="!checked.length"  ng-click="assign(checked,grp)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload', 'checklist-model']);
+    app.controller('myCtrl', function ($scope, $http, Upload, $timeout) {
+        $scope.grp = {};
+        $scope.itemsPerPage = 5;
+        $scope.currentPage = 1;
+        $scope.TotalRows = 0;
+        $scope.Groups = [];
+        $scope.students = [];
+        $scope.checked = [];
+        $scope.loading = false;
+
+
+        $scope.assign = function (checks, group) {
+
+
+            var model = {
+                GroupId : group.Id,
+                UserId : checks
+            }
+
+            console.log(model)
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AssignUserGroup",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.checked = [];
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+        $scope.lista = function (curr) {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListGroups/' + curr,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.Groups = res.data.Groups;
+                $scope.TotalRows = res.data.TotalRows;
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.lista(1);
+
+        $scope.loadUpdate = function (item) {
+
+            $scope.grp = item
+            console.log($scope.grp)
+        }
+
+        $scope.assignGroup = function (item) {
+            $scope.grp = item
+
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'StudentsForGroup',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.students = res.data.Users;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.edit = function (item) {
+
+            var model = {
+                ID: item.Id,
+                Name: item.Name,
+                CreatedBy: user.username
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpdateGroup",
+                headers: config.headers,
+                data : model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.deleteGroup = function (item) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteGroup/" + item.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data,"DSmartQB.")
+                    $scope.lista(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+
+        $scope.pageChanged = function () {
+            $scope.lista($scope.currentPage);
+        }
+
+        $scope.saveCreate = function (group) {
+
+            var model = {
+                ID : '' ,
+                Name: group.Name,
+                CreatedBy: user.username
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl +"AddGroup",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+                $scope.grp = {};
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+
+
+        }
+
+        $scope.addBulk = function (file) {
+
+            Upload.upload({
+                url: apiurl + 'AddBulkGroup',
+                data: { file: file ,  CreatedBy : user.username},
+                headers: {
+                    'Content-Type': undefined,
+                    'authorization': 'bearer ' + user.access_token
+                }
+            }).then(function (res) {
+
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+
+                $scope.lista(1);
+            }, function (resp) {
+                console.log('Error status: ' + resp.status);
+                });
+
+        }
+
+
+    });
+
+
+</script>
+

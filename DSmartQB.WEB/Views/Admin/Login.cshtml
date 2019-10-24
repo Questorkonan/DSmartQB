@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+<!doctype html>
+<html lang="en" dir="ltr" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#4188c9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+    <!-- Generated: 2019-04-04 16:55:45 +0200 -->
+    <title>Login - DSmartQB</title>
+
+    <script src="../assets/js/vendors/jquery-3.2.1.min.js"></script>
+
+    <script src="../assets/js/toastr.js"></script>
+    <script src="../assets/js/require.min.js"></script>
+    <script src="../assets/js/angular/angular.min.js"></script>
+   
+
+<script>
+    history.pushState({ page: 1 }, "Title 1", "#no-back");
+    window.onhashchange = function (event) {
+        window.location.hash = "no-back";
+    };
+
+</script>
+
+
+
+    <script>
+        requirejs.config({
+            baseUrl: '/'
+        });
+        
+
+        var app = angular.module("myApp", []);
+        app.controller('myCtrl', function ($scope, $http, $window) {
+
+            $scope.frm = {};
+            $scope.loading = false;
+
+            $scope.login = function (obj) {
+
+                $scope.loading = true;
+
+                var obj = { 'username': obj.username, 'password': obj.password, 'grant_type': 'password' };
+                var access = { 'username': obj.username, 'password': obj.password };
+
+                Object.toparams = function ObjectsToParams(obj) {
+                    var p = [];
+                    for (var key in obj) {
+                        p.push(key + '=' + encodeURIComponent(obj[key]));
+                    }
+                    return p.join('&');
+                }
+
+                var req = {
+                    method: 'POST',
+                    url: 'http://localhost:54913/token',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    data: Object.toparams(obj)
+                }
+
+                $http(req).then(function (res) {
+
+
+                    var obj = new Object();
+                    obj.username = res.data.user_name;
+                    obj.fullname = res.data.full_name;
+                    obj.role = res.data.Role_id;
+                    obj.prefix = res.data.user_prefix;
+                    obj.id = res.data.user_id;
+                    obj.access_token = res.data.access_token;
+
+                    sessionStorage.user = JSON.stringify(obj);
+
+
+                    var model = JSON.stringify(access)
+
+                    console.log(model)
+
+                    $http.post('@Url.Action("Access")', model).then(function (d) {
+                        $scope.loading = false;
+
+                     $window.location.href = '@Url.Action("Dashboard")';
+                    },
+                        function error(err) {
+                            console.log(err);
+
+                        });
+
+
+
+                },
+                    function err(response) {
+                        toastr.error(response.data.error_description, response.data.error);
+
+                    }
+                );
+
+
+
+
+
+
+            }
+
+
+
+
+        });
+
+
+    </script>
+
+
+    <!-- Dashboard Core -->
+    <link href="../assets/css/dashboard.css" rel="stylesheet" />
+    <link href="~/assets/css/Custom.css" rel="stylesheet" />
+    <link href="../assets/css/toastr.css" rel="stylesheet" />
+
+</head>
+<body class="" ng-controller="myCtrl">
+    <div class="page">
+        <div class="page-single">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-login mx-auto">
+                        <div class="text-center mb-6">
+                            <img src="../demo/brand/tabler.svg" class="h-6" alt="">
+                        </div>
+                        <form class="card" name="loginFrm" novalidate>
+                            <div class="card-body p-6">
+                                <div class="card-title">Login to your account</div>
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" placeholder="Enter username" name="username" ng-model="frm.username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        Password
+                                    </label>
+                                    <input type="password" class="form-control" placeholder="Password" name="password" ng-model="frm.password" required>
+                                </div>
+                             
+                                <div class="form-footer">
+                                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="loginFrm.$invalid" ng-click="login(frm)">Sign in</button>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">
+
+                                    </label>
+
+                                    <div class="lds-hourglass" style="margin-left: 133px;margin-top: 9px;"  ng-if="loading"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

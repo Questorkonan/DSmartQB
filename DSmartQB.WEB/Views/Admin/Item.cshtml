@@ -1,0 +1,447 @@
+﻿
+@{
+    ViewBag.Title = "Item";
+}
+<style>
+    .selectTab {
+        background: rgba(70, 127, 207, 0.06);
+        font-weight: 600;
+    }
+</style>
+
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
+<div class="row" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="col-md-2">
+        <h3 class="page-title mb-5 text-indigo">Items</h3>
+        <div>
+            <div class="list-group list-group-transparent mb-0">
+
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex align-items-center" ng-class="{'selectTab': activate == 1}" ng-click="selectedTab(1)">
+                    <span class="icon mr-3"><i class="fe fe-send"></i></span>Classsified
+                </a>
+                <a href="javascript:void(0)" class="list-group-item list-group-item-action d-flex align-items-center" ng-class="{'selectTab': activate == 2}" ng-click="selectedTab(2)">
+                    <span class="icon mr-3"><i class="fe fe-alert-circle"></i></span>Un-Classified
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary btn-spacey dropdown-toggle" data-toggle="dropdown">
+                        Add Item
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href='@Url.Action("CreateItem")'><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
+                        <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
+                    </div>
+
+                </div>
+                <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+            </div>
+            <div class="card-body" ng-show="activate == 1">
+
+                <div class="table-responsive">
+                    <table class="table card-table table-striped table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th>Duration</th>
+                                <th>Difficulty</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in citems">
+                                <td>
+                                    <p class="question-text text-capitalize text-dark" ng-bind-html="item.Name | trust">
+                                </td>
+                                <td>
+                                    <span ng-class="{'badge badge-primary' : item.Type == 'MCQ' , 'badge badge-success' : item.Type == 'TF' , 'badge badge-info' : item.Type == 'MRQ'}">{{item.Type}}</span>
+                                </td>
+                                <td>{{item.Duration}}</td>
+                                <td><span ng-class="{'status-icon bg-success' : item.Difficulty == 'Mild' , 'status-icon bg-primary' : item.Difficulty == 'Normal', 'status-icon bg-danger' : item.Difficulty == 'Strong'}"></span>{{item.Difficulty}}</td>
+                                <td>
+                                <td>
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(item)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deletecItem(item)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <ul uib-pagination total-items="cTotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="ccurrentPage" boundary-links="true" num-pages="numPages" ng-change="cpageChanged()"></ul>
+                </div>
+            </div>
+
+
+
+            <div class="card-body" ng-show="activate == 2">
+
+                <div class="table-responsive">
+                    <table class="table card-table table-striped table-vcenter">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th>Duration</th>
+                                <th>Difficulty</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in uitems">
+                                <td>
+                                    <p class="question-text text-capitalize text-dark" ng-bind-html="item.Name | trust">
+                                </td>
+                                <td>
+                                    <span ng-class="{'badge badge-primary' : item.Type == 'MCQ' , 'badge badge-success' : item.Type == 'TF' , 'badge badge-info' : item.Type == 'MRQ'}">{{item.Type}}</span>
+                                </td>
+                                <td>{{item.Duration}}</td>
+                                <td><span ng-class="{'status-icon bg-success' : item.Difficulty == 'Mild' , 'status-icon bg-primary' : item.Difficulty == 'Normal', 'status-icon bg-danger' : item.Difficulty == 'Strong'}"></span>{{item.Difficulty}}</td>
+                                <td>
+                                <td>
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(item)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteuItem(item)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <ul uib-pagination total-items="uTotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="ucurrentPage" boundary-links="true" num-pages="numPages" ng-change="upageChanged()"></ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Group</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="attachForm" novalidate>
+
+                        <div class="form-group">
+                            <label>Select Type</label>
+
+                            <select class="form-control col-4" ng-model="templateType" ng-change="downloadTemplate(templateType.Type)"
+                                    data-ng-options="t as t.Type for t in types">
+                                <option value="">Select Type</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label></label>
+                            <a href='@Url.Content("~/Template/MCQ.docx")' ng-if="slogan == 'MCQ'">
+
+                                <b><span class="fe fe-download"></span> Download MCQ</b>
+                            </a>
+                            <a href='@Url.Content("~/Template/MCQ.docx")' ng-if="slogan == 'MRQ'">
+
+                                <b><span class="fe fe-download"></span> Download MRQ</b>
+                            </a>
+                            <a href='@Url.Content("~/Template/TF.docx")' ng-if="slogan == 'TF'">
+
+                                <b><span class="fe fe-download"></span> Download TF</b>
+                            </a>
+                        </div>
+                        <div class="form-group">
+                            <label></label>
+
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" ngf-select ng-model="grpFile" name="groupTemplate" required>
+                                <label class="custom-file-label">Choose file</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="attachForm.$invalid" ng-click="UploadItem(grpFile)">Save changes</button>
+                </div>
+                <div style="padding: 9px;" ng-bind-html="errMessage | trust"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload']);
+    app.controller('myCtrl', function ($scope, $http, Upload , $window) {
+        $scope.itemsPerPage = 5;
+        $scope.activate = 1;
+        $scope.loading = false;
+
+        $scope.ccurrentPage = 1;
+        $scope.cTotalRows = 0;
+        $scope.citems = [];
+
+        $scope.ucurrentPage = 1;
+        $scope.uTotalRows = 0;
+        $scope.uitems = [];
+
+        //$scope.templateType = 'MCQ';
+        $scope.templateType = {};
+
+        $scope.slogan = ''
+
+        $scope.errMessage = '';
+
+
+
+
+        $scope.types = [];
+
+        $scope.loadTypes = function () {
+            $scope.loading = true;
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ItemTypes',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.types = res.data;
+                $scope.loading = false;
+                console.log($scope.types)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadTypes();
+
+
+        $scope.downloadTemplate = function (temp) {
+            
+            if (temp == undefined) {
+                $scope.slogan = ''
+            }
+            if (temp == 'MCQ') {
+                $scope.slogan = 'MCQ'
+            } else if (temp == 'MRQ') {
+                $scope.slogan = 'MRQ'
+            }
+            else if (temp == 'TF') {
+                $scope.slogan = 'TF'
+            }
+        }
+
+        $scope.loadUpdate = function (item) {
+
+            sessionStorage.item = JSON.stringify(item);
+
+            if (item.Type == 'MCQ') {
+
+                $window.location.href = '@Url.Action("MCQ")';
+
+            } else if (item.Type == 'MRQ') {
+                //
+                 $window.location.href = '@Url.Action("MRQ")';
+            }
+            else if (item.Type == 'TF') {
+                 $window.location.href = '@Url.Action("TF")';
+            }
+
+
+        }
+
+        $scope.deleteuItem = function (itm) {
+
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteItem/" + itm.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.loadUnClassified(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+
+
+        $scope.deletecItem = function (itm) {
+
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteItem/" + itm.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.loadClassified(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+        $scope.loadUnClassified = function (page) {
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'UnAssociatedItems/' + page,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.uitems = res.data.Items;
+                $scope.uTotalRows = res.data.TotalRows;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.upageChanged = function () {
+            $scope.loadUnClassified($scope.ucurrentPage);
+        }
+
+        $scope.loadClassified = function (page) {
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'AssociatedItems/' + page,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.citems = res.data.Items;
+                $scope.cTotalRows = res.data.TotalRows;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.cpageChanged = function () {
+            $scope.loadClassified($scope.ccurrentPage);
+        }
+
+
+        $scope.loadClassified(1);
+        $scope.loadUnClassified(1);
+
+        $scope.selectedTab = function (index) {
+            $scope.activate = index;
+            if (index == 1) {
+                $scope.loadClassified(1);
+            }
+            else if (index == 2) {
+                $scope.loadUnClassified(1);
+            }
+        }
+
+        $scope.UploadItem = function (file) {
+
+
+            if ($scope.slogan == 'TF') {
+
+                Upload.upload({
+                    url: apiurl + 'TFUpload',
+                    data: { file: file, CreatedBy: user.id, qType: $scope.templateType.Id },
+                    headers: {
+                        'Content-Type': undefined,
+                        'authorization': 'bearer ' + user.access_token
+                    }
+                }).then(function (res) {
+
+                    if (res.data.Key == '0') {
+                        toastr.error(res.data.Value, 'Error');
+                    } else {
+                        toastr.success(res.data.Value, 'Success');
+                    }
+                    $scope.loadClassified(1);
+                }, function (err) {
+                    console.log(err.data.Message);
+                    $scope.errMessage = err.data.Message
+                });
+
+
+            } else {
+
+
+                Upload.upload({
+                    url: apiurl + 'UploadItem',
+                    data: { file: file, CreatedBy: user.id, qType: $scope.templateType.Id },
+                    headers: {
+                        'Content-Type': undefined,
+                        'authorization': 'bearer ' + user.access_token
+                    }
+                }).then(function (res) {
+
+                    if (res.data.Key == '0') {
+                        toastr.error(res.data.Value, 'Error');
+                    } else {
+                        toastr.success(res.data.Value, 'Success');
+                    }
+                    $scope.loadClassified(1);
+                }, function (err) {
+                    console.log(err.data.Message);
+                    $scope.errMessage = err.data.Message
+                });
+
+
+            }
+
+        }
+
+
+    });
+    app.filter("trust", ['$sce', function ($sce) {
+        return function (htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }]);
+
+</script>

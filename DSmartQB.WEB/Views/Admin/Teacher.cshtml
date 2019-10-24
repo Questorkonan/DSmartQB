@@ -1,0 +1,585 @@
+﻿
+@{
+    ViewBag.Title = "Teacher";
+}
+
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div class="page-header">
+        <h1 class="page-title">
+            Teachers
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary btn-spacey dropdown-toggle" data-toggle="dropdown">
+                            Add Teacher
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
+                        </div>
+
+                    </div>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+                    <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center w-1"><i class="icon-people"></i></th>
+                                <th>User</th>
+                                <th class="text-center">Gender</th>
+                                <th class="text-center">National Id</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Username</th>
+                                <th class="text-center"><i class="icon-settings"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="tchr in teachers">
+                                <td class="text-center">
+                                    <div class="avatar d-block">
+                                        {{tchr.Prefix}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>{{tchr.Fullname}}</div>
+                                    <div class="small text-muted">
+                                        Date Birth :  {{tchr.Datebirth}}
+                                    </div>
+                                </td>
+                                <th class="text-center">{{tchr.Gender}}</th>
+                                <td class="text-center">
+                                    {{tchr.NationalId}}
+                                </td>
+                                <td class="text-center">
+                                    <a href="mailto:{{tchr.Email}}">{{tchr.Email}}</a>
+                                </td>
+                                <td class="text-center">
+                                    {{tchr.Username}}
+                                </td>
+                                <td class="text-center">
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(tchr)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item"  data-toggle="modal" data-target="#changePassModal" ng-click="changePass(tchr)"><i class="dropdown-icon fe fe-refresh-ccw"></i> Change Password </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteUser(tchr)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    @*Create Teacher*@
+
+    <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Teacher</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="mannual" novalidate>
+
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" placeholder="First Name" ng-model="teacher.firstname" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Last Name" ng-model="teacher.lastname" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Datebirth</label>
+                                    <div class="input-form">
+                                        <input type="text" class="form-control" readonly="readonly" uib-datepicker-popup="{{dateFormat}}" ng-model="teacher.datebirth" name="availabledate" is-open="availableDatePopup.opened" datepicker-options="availableDateOptions" ng-required="true" close-text="Close" ng-click="OpenAvailableDate()"
+                                               placeholder="Available Date" required />
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-control" name="gender" ng-model="teacher.gender">
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">National Id</label>
+                                    <input type="text" class="form-control" ui-mask="999999999999999" ng-model="teacher.nationalid" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="text" class="form-control" placeholder="Email" ng-model="teacher.email" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="teacher.phone" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" placeholder="Username" ng-model="teacher.username" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Password</label>
+                                    <input type="password" class="form-control" placeholder="Password" ng-model="teacher.password" required>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="saveCreate(teacher)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*Upload Teacher*@
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Teacher</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="attachForm" novalidate>
+                        <div class="form-group">
+                            <label></label>
+                            <a href='@Url.Content("~/Template/Teacher.xlsx")'>
+
+                                <b><span class="fe fe-download"></span> Download</b>
+                            </a>
+                        </div>
+                        <div class="form-group">
+                            <label></label>
+
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" ngf-select ng-model="teacherFile" name="groupTemplate" required>
+                                <label class="custom-file-label">Choose file</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="attachForm.$invalid" ng-click="addBulk(teacherFile)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    @*Update Group*@
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update <span class="text-indigo">[{{teacher.firstname +' '+ teacher.lastname}}]</span></h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="mannual" novalidate>
+
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" placeholder="First Name" ng-model="teacher.firstname" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" placeholder="Last Name" ng-model="teacher.lastname" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-control" name="gender" ng-model="teacher.gender">
+                                        <option value="M">Male</option>
+                                        <option value="F">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-8">
+                                <div class="form-group">
+                                    <label class="form-label">National Id</label>
+                                    <input type="text" class="form-control" ui-mask="999999999999999" ng-model="teacher.nationalid" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Email</label>
+                                    <input type="text" class="form-control" placeholder="Email" ng-model="teacher.email" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="teacher.phone" required>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" placeholder="Username" ng-model="teacher.username" required>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="edit(teacher)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*Change Password*@
+
+    <div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="changePassFrm" novalidate>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-star"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" placeholder="password" ng-model="teacher.password" required>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Id" ng-model="teacher.Id">
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="changePassFrm.$invalid" ng-click="editPass(teacher)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload','ui.mask']);
+    app.controller('myCtrl', function ($scope, $http, Upload, $timeout) {
+        $scope.teacher = {
+            'firstname': null,
+            'lastname': null,
+            'datebirth': new Date(),
+            'gender': 'M',
+            'nationalid': null,
+            'email' : null,
+            'phone': null,
+            'username': null,
+            'password': null
+
+        };
+        $scope.itemsPerPage = 5;
+        $scope.currentPage = 1;
+        $scope.TotalRows = 0;
+        $scope.teachers = [];
+        $scope.loading = false;
+
+        $scope.dateFormat = 'yyyy-MM-dd';
+        $scope.availableDateOptions = {
+            formatYear: 'yy',
+            startingDay: 1,
+            maxDate: new Date(2030, 5, 22)
+        };
+
+        $scope.availableDatePopup = {
+            opened: false
+        };
+
+
+        $scope.OpenAvailableDate = function () {
+            $scope.availableDatePopup.opened = !$scope.availableDatePopup.opened;
+        };
+
+        $scope.lista = function (curr) {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListUsers/' + curr,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.teachers = res.data.Users;
+                $scope.TotalRows = res.data.TotalRows;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.lista(1);
+
+        $scope.changePass = function (item) {
+            $scope.teacher = {
+                'id': item.Id
+            }
+        }
+
+        $scope.editPass = function (user) {
+            console.log(user)
+            var model = {
+                Id: user.id,
+                Password: user.password
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "ChangePassword",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+
+        $scope.loadUpdate = function (item) {
+
+            var req = {
+                method: 'Get',
+                url: apiurl + "GetUserById/" + item.Id,
+                headers: config.headers
+            }
+
+            $http(req).then(function (res) {
+               var data = res.data
+
+                $scope.teacher = {
+                    'firstname': data.Firstname,
+                    'lastname': data.Lastname,
+                    'datebirth': data.Datebirth,
+                    'gender': data.Gender,
+                    'nationalid': data.NationalId,
+                    'email': data.Email,
+                    'phone': data.Phone,
+                    'username': data.Username,
+                    'Id': data.Id
+
+                };
+
+                console.log($scope.teacher)
+
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.edit = function (item) {
+
+            var model = {
+                Firstname: item.firstname,
+                Lastname: item.lastname,
+                Gender: item.gender,
+                NationalId: item.nationalid,
+                Email: item.email,
+                Phone: item.phone,
+                Username: item.username,
+                ID: item.Id,
+                CreatedBy: user.username
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpdateUser",
+                headers: config.headers,
+                data : model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data.Value, "DSmartQB.")
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.deleteUser = function (item) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteUser/" + item.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data,"DSmartQB.")
+                    $scope.lista(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+
+        $scope.pageChanged = function () {
+            $scope.lista($scope.currentPage);
+        }
+
+        $scope.saveCreate = function (teacher) {
+
+            var req = {
+                method: 'POST',
+                url: apiurl +"CreateUser",
+                headers: config.headers,
+                data: teacher
+            }
+
+            $http(req).then(function (res) {
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+                $scope.teacher = {
+                    'firstname': null,
+                    'lastname': null,
+                    'datebirth': new Date(),
+                    'gender': 'M',
+                    'nationalid': null,
+                    'email': null,
+                    'phone': null,
+                    'username': null,
+                    'password': null
+
+                };
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+
+
+        }
+
+        $scope.addBulk = function (file) {
+
+            Upload.upload({
+                url: apiurl + 'AddBulkTeacher',
+                data: { file: file ,  CreatedBy : user.username},
+                headers: {
+                    'Content-Type': undefined,
+                    'authorization': 'bearer ' + user.access_token
+                }
+            }).then(function (res) {
+
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+
+                $scope.lista(1);
+            }, function (resp) {
+                console.log('Error status: ' + resp.status);
+                });
+
+        }
+
+
+    });
+
+
+</script>

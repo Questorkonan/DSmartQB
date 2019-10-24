@@ -1,0 +1,264 @@
+﻿
+@{
+    ViewBag.Title = "TF";
+}
+
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="page-header">
+        <h1 class="page-title">
+            Item
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body o-auto">
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                    <form name="addItem" novalidate>
+
+                        <div class="form-group">
+                            <label><b>Question</b></label>
+                            <ng-ckeditor id="test" name="item" ng-model="question.Item.Stem"
+                                         ng-config="config"></ng-ckeditor>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label></label>
+
+                            <label class="custom-switch">
+                                <input type="checkbox" name="tf" class="custom-switch-input" ng-model="question.Answer.Status" ng-change="changeVal(question.Answer.Status)">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description"></span>
+                            </label>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="form-group">
+                                <label><b>Duration</b></label>
+                                <input type="number" min="2" class="form-control col-2" placeholder="Duration" name="duration" ng-model="question.Item.Duration">
+                            </div>
+
+                            <div class="form-group">
+                                <label><b>Level</b></label>
+                                <select class="form-control col-3" name="level" ng-model="question.Item.Level">
+                                    <option value="Mild">Mild</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Strong">Strong</option>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label><b>Course</b></label>
+                                <select class="form-control col-3" ng-model="question.Planner.CourseId" ng-change="drawPlanner(question.Planner.CourseId)">
+                                    <option ng-repeat="crs in courses" value="{{crs.Id}}">{{crs.Name}}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="form-group">
+                                    <label><b>Chapter</b></label>
+                                    <select class="form-control col-3" ng-model="question.Planner.PlannerId" ng-change="drawILO(question.Planner.PlannerId)">
+                                        <option ng-repeat="lsn in lessons" value="{{lsn.Id}}">{{lsn.Name}}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label><b>ILO</b></label>
+                                    <select class="form-control col-3" ng-model="question.Item.ILoId">
+                                        <option ng-repeat="ilo in ilos" value="{{ilo.Id}}">{{ilo.Text}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary ml-auto" ng-click="addQuestion(question)">Save Question</button>
+
+                        </div>
+
+
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+<script>
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ng.ckeditor']);
+    app.controller('myCtrl', function ($scope, $http) {
+
+        $scope.dispacher = '';
+        $scope.loading = false;
+        $scope.config = {};
+        $scope.config.toolbarGroups = [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'clipboard', groups: ['clipboard', 'undo'] },
+            { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+            { name: 'forms', groups: ['forms'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph'] },
+            { name: 'links', groups: ['links'] },
+            { name: 'insert', groups: ['insert'] },
+            { name: 'styles', groups: ['styles'] },
+            { name: 'colors', groups: ['colors'] },
+            { name: 'document', groups: ['mode', 'document', 'doctools'] },
+            { name: 'tools', groups: ['tools'] },
+            { name: 'others', groups: ['others'] },
+            { name: 'about', groups: ['about'] }
+        ];
+        $scope.config.removeButtons = 'BGColor,Anchor,Subscript,Superscript,Paste,Copy,Cut,Undo,Redo';
+
+
+        var itemSession = JSON.parse(sessionStorage.item)
+
+        $scope.question = {};
+        $scope.loading = false;
+
+        $scope.getQuestion = function (item) {
+            $scope.loading = true;
+            
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadItemTF/' + item,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+
+                $scope.question = res.data;
+                console.log($scope.question)
+                if (res.data.Planner != null) {
+
+                    $scope.drawPlanner($scope.question.Planner.CourseId);
+                    $scope.drawILO($scope.question.Planner.PlannerId)
+                }
+                $scope.loading = false;
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.getQuestion(itemSession.Id)
+
+        
+        $scope.courses = [];
+        $scope.loadCourses = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadCourses',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.courses = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadCourses();
+
+        $scope.lessons = [];
+        $scope.loadLessons = function (id) {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListPlanners/' + id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.lessons = res.data;
+                console.log
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.changeVal = function (val) {
+            $scope.question.Answer.Status = val;
+        }
+
+        $scope.ilos = [];
+
+        $scope.loadIlos = function (id) {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadIlos/' + id,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.ilos = res.data;
+                console.log($scope.ilos)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+        $scope.drawPlanner = function (e) {
+
+                $scope.loadLessons(e);
+        }
+
+
+
+        $scope.drawILO = function (e) {
+            $scope.loadIlos(e);
+        }
+
+
+        $scope.addQuestion = function (obj) {
+
+
+            if (obj.Item.Stem == '') {
+                toastr.error('Question is required', 'DSmartQB')
+            } else {
+                    var req = {
+                    method: 'POST',
+                    url: apiurl + "UpdateTF",
+                    headers: config.headers,
+                    data: obj
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    location.href = '@Url.Action("Item")';
+
+                    $scope.loadCourses();
+
+                }, function (err) {
+                    console.log(err.data.Message)
+                    toastr.error(err.data.Message, "DSmartQB.")
+                });
+            }
+
+
+        }
+
+
+
+    });
+
+
+</script>

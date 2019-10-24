@@ -1,0 +1,177 @@
+﻿@using DSmartQB.WEB.Helpers
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#4188c9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+    <!-- Generated: 2019-04-04 16:55:45 +0200 -->
+    <title>DSmartQB</title>
+    
+    <script src="~/assets/js/vendors/jquery-3.2.1.min.js"></script>
+    <script src="~/assets/js/toastr.js"></script>
+    <script src="~/assets/js/angular/angular.min.js"></script>
+    <script src="~/assets/js/angular/ui-bootstrap-tpls-3.0.5.min.js"></script>
+    <script src="~/assets/js/angular-datepicker.js"></script>
+    <script src="~/assets/js/angular/angular-ui-utils.min.js"></script>
+    <script src="~/assets/js/angular/checklist-model.js"></script>
+    <script src="~/assets/js/angular/ckeditor.js"></script>
+    <script src="~/assets/js/angular/ng-ckeditor.min.js"></script>
+    <script src="~/assets/js/angular/datetime-picker.js"></script>
+    <script src="~/assets/js/require.min.js"></script>
+
+    <script>
+        
+        requirejs.config({
+            baseUrl: '/'
+        });
+
+
+        
+    </script>
+    <!-- Dashboard Core -->
+    <link href="~/assets/css/dashboard.css" rel="stylesheet" />
+    <link href="~/assets/css/Custom.css" rel="stylesheet" />
+    <link href="~/assets/css/toastr.css" rel="stylesheet" />
+
+
+    <script src="~/assets/js/dashboard.js"></script>
+    <!-- c3.js Charts Plugin -->
+    <link href="~/assets/plugins/charts-c3/plugin.css" rel="stylesheet" />
+    <script src="~/assets/plugins/charts-c3/plugin.js"></script>
+    <link href="~/assets/css/bootstrap-datepicker.css" rel="stylesheet" />
+
+</head>
+<body class="">
+    <div class="page">
+        <div class="flex-fill">
+            <div class="header py-4">
+                <div class="container">
+                    @Html.Partial("_Userbanner")
+                </div>
+            </div>
+            <div class="header collapse d-lg-flex p-0" id="headerMenuCollapse">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-3 ml-auto">
+                            <form class="input-icon my-3 my-lg-0">
+                                <input type="search" class="form-control header-search" placeholder="Search&hellip;" tabindex="1">
+                                <div class="input-icon-addon">
+                                    <i class="fe fe-search"></i>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg order-lg-first">
+                            <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    if (User.IsInRole("Administrator"))
+                                    {
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Dashboard", "Admin")' class='@Html.IsActive("Admin", "Dashboard")'><i class="fe fe-home"></i> Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Group", "Admin")' class='@Html.IsActive("Admin", "Group")'><i class="fe fe-airplay"></i> Groups</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Teacher", "Admin")' class='@Html.IsActive("Admin", "Teacher")'><i class="fe fe-users"></i> Teachers</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Student", "Admin")' class='@Html.IsActive("Admin", "Student")'><i class="fe fe-user"></i> Students</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Subject", "Admin")' class='@Html.IsActive("Admin", "Subject")'><i class="fe fe-check-square"></i> Subjects</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Item", "Admin")' class='@Html.IsActive("Admin", "Item")'><i class="fe fe-database"></i> Items</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Exam", "Admin")' class='@Html.IsActive("Admin", "Exam")'><i class="fe fe-file"></i> Exams</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Report", "Admin")' class='@Html.IsActive("Admin", "Report")'><i class="fe fe-image"></i> Reports</a>
+                                        </li>
+                                    }
+                                    if (User.IsInRole("Teacher"))
+                                    {
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Dashboard", "Admin")' class='@Html.IsActive("Admin", "Dashboard")'><i class="fe fe-home"></i> Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Item", "Admin")' class='@Html.IsActive("Admin", "Item")'><i class="fe fe-database"></i> Items</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href='@Url.Action("Exam", "Admin")' class='@Html.IsActive("Admin", "Exam")'><i class="fe fe-file"></i> Exams</a>
+                                        </li>
+                                    }
+                                }
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3 my-md-5">
+                <div class="container">
+
+                    @RenderBody()
+                </div>
+                <div class="bottombar js-bottombar" style="display: none">
+                    <a href="#" class="bottombar-close js-bottombar-close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </a>
+                    <div class="container position-relative d-flex align-items-center">
+                        <a href="https://gumroad.com/l/tabler-email?utm_source=demo" class="bottombar-image">
+                            <picture>
+                                <source srcset="https://tabler.io/img/bottombar.webp" type="image/webp">
+                                <source srcset="https://tabler.io/img/bottombar.png" type="image/jpeg">
+                                <img src="https://tabler.io/img/bottombar.png" alt="">
+                            </picture>
+                        </a>
+                        <div class="d-lg-flex flex-fill align-items-center">
+                            <div class="mr-2">
+                                50 eye-catching templates tested in 90+ email clients. Compose your own, mobile optimized email message in less than 5 minutes!
+                            </div>
+                            <div class=" ml-auto mt-2 mt-lg-0">
+                                <a href="https://gumroad.com/l/tabler-email?utm_source=demo" class="btn btn-sm btn-green text-nowrap" target="_blank">More info</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-auto ml-lg-auto">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <ul class="list-inline list-inline-dots mb-0">
+                                    <li class="list-inline-item"><a href="./docs/index.html">Documentation</a></li>
+                                    <li class="list-inline-item"><a href="./faq.html">FAQ</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
+                        Copyright © 2019 <a href=".">Tabler</a>. Theme by <a href="https://codecalm.net" target="_blank">codecalm.net</a> All rights reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
+

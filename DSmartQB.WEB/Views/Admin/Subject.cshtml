@@ -1,0 +1,274 @@
+﻿
+@{
+    ViewBag.Title = "Subject";
+}
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="page-header">
+        <h1 class="page-title">
+            Subject
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary btn-spacey dropdown-toggle" data-toggle="dropdown">
+                            Add Subject
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href='@Url.Action("CongitiveLevel")'><i class="dropdown-icon fe fe-link"></i> Congitive Level</a>
+                            <a class="dropdown-item" href='@Url.Action("CreateSubject")'><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
+                            @*<a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-upload"></i> Upload</a>*@
+                        </div>
+
+                    </div>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+                    <ul class="list-unstyled list-separated">
+                        <li class="list-separated-item" ng-repeat="sub in Subjects">
+                            <div class="row align-items-center">
+
+                                <div class="col">
+                                    <div>
+                                        <a href="javascript:void(0)" class="text-inherit">{{sub.Name}}</a>
+                                    </div>
+                                    <small class="d-block item-except text-sm text-muted h-1x  text-cyan">{{sub.Code}}</small>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="loadUpdate(sub)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteSubject(sub)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    @*Upload Group*@
+
+    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Group</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="attachForm" novalidate>
+                        <div class="form-group">
+                            <label></label>
+                            <a href='@Url.Content("~/Template/Group.xlsx")'>
+
+                                <b><span class="fe fe-download"></span> Download</b>
+                            </a>
+                        </div>
+                        <div class="form-group">
+                            <label></label>
+
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" ngf-select ng-model="subFile" name="groupTemplate" required>
+                                <label class="custom-file-label">Choose file</label>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="attachForm.$invalid" ng-click="addBulk(subFile)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload']);
+    app.controller('myCtrl', function ($scope, $http, Upload , $window) {
+        $scope.sub = {};
+        $scope.itemsPerPage = 5;
+        $scope.currentPage = 1;
+        $scope.TotalRows = 0;
+        $scope.Subjects = [];
+        $scope.loading = false;
+
+        $scope.lista = function (curr) {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListSubjects/' + curr,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.Subjects = res.data.Courses;
+                $scope.TotalRows = res.data.TotalRows;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.lista(1);
+
+        $scope.loadUpdate = function (item) {
+
+            sessionStorage.subject = JSON.stringify(item);
+            //console.log(JSON.parse(sessionStorage.subject))
+
+            $window.location.href = '@Url.Action("EditSubject")';
+
+
+        }
+
+        $scope.edit = function (item) {
+
+            var model = {
+                ID: item.Id,
+                Name: item.Name,
+                CreatedBy: user.username
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpdateGroup",
+                headers: config.headers,
+                data : model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.deleteSubject = function (item) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "deleteSubject/" + item.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data,"DSmartQB.")
+                    $scope.lista(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+
+        $scope.pageChanged = function () {
+            $scope.lista($scope.currentPage);
+        }
+
+        $scope.saveCreate = function (group) {
+
+            var model = {
+                ID : '' ,
+                Name: group.Name,
+                CreatedBy: user.username
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl +"AddGroup",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+                $scope.sub = {};
+                $scope.lista(1);
+            }, function (err) {
+                console.log(err)
+            });
+
+
+
+        }
+
+        $scope.addBulk = function (file) {
+
+            Upload.upload({
+                url: apiurl + 'AddBulkGroup',
+                data: { file: file ,  CreatedBy : user.username},
+                headers: {
+                    'Content-Type': undefined,
+                    'authorization': 'bearer ' + user.access_token
+                }
+            }).then(function (res) {
+
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+                    toastr.success(res.data.Value, 'Success');
+                }
+
+                $scope.lista(1);
+            }, function (resp) {
+                console.log('Error status: ' + resp.status);
+                });
+
+        }
+
+
+    });
+
+
+</script>
+
+

@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSmartQB.API", "DSmartQB.API\DSmartQB.API.csproj", "{D750C673-994E-4061-A748-AA5B0019BC41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSmartQB.WEB", "DSmartQB.WEB\DSmartQB.WEB.csproj", "{07244F57-14BF-4867-9B45-BB2EAE70C6C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSmartQB.CLIENT", "DSmartQB.CLIENT\DSmartQB.CLIENT.csproj", "{123CACC4-0B4E-47E3-9555-3D222B03611C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSmartQB.CORE", "DSmartQB.CORE\DSmartQB.CORE.csproj", "{56B54DB3-45C5-4C76-BF81-FEF3AAE24272}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D750C673-994E-4061-A748-AA5B0019BC41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D750C673-994E-4061-A748-AA5B0019BC41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D750C673-994E-4061-A748-AA5B0019BC41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D750C673-994E-4061-A748-AA5B0019BC41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07244F57-14BF-4867-9B45-BB2EAE70C6C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07244F57-14BF-4867-9B45-BB2EAE70C6C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07244F57-14BF-4867-9B45-BB2EAE70C6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07244F57-14BF-4867-9B45-BB2EAE70C6C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123CACC4-0B4E-47E3-9555-3D222B03611C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123CACC4-0B4E-47E3-9555-3D222B03611C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123CACC4-0B4E-47E3-9555-3D222B03611C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123CACC4-0B4E-47E3-9555-3D222B03611C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56B54DB3-45C5-4C76-BF81-FEF3AAE24272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56B54DB3-45C5-4C76-BF81-FEF3AAE24272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56B54DB3-45C5-4C76-BF81-FEF3AAE24272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56B54DB3-45C5-4C76-BF81-FEF3AAE24272}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

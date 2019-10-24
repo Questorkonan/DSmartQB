@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "CreateMannual";
+}
+
+<div class="row" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <button type="button" class="btn btn-primary" ng-disabled="!checked.length" ng-click="assign(checked)">Save changes</button>
+
+                <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">   @*style="overflow-y: scroll;height: 400px;"*@
+                        <table class="table card-table table-striped table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Item</th>
+                                    <th>Type</th>
+                                    <th>Duration</th>
+                                    <th>Difficulty</th>
+                                    <th>Mark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in citems">
+                                    <td>
+                                        <input type="checkbox" checklist-model="checked" name="Id" checklist-value="item">
+                                    </td>
+                                    <td>
+                                        <p class="question-text text-capitalize text-dark" ng-bind-html="item.Name | trust">
+                                    </td>
+                                    <td>
+                                        <span ng-class="{'badge badge-primary' : item.Type == 'MCQ' , 'badge badge-success' : item.Type == 'TF' , 'badge badge-info' : item.Type == 'MRQ'}">{{item.Type}}</span>
+                                    </td>
+                                    <td>{{item.Duration}}</td>
+                                    <td><span ng-class="{'status-icon bg-success' : item.Difficulty == 'Mild' , 'status-icon bg-primary' : item.Difficulty == 'Normal', 'status-icon bg-danger' : item.Difficulty == 'Strong'}"></span>{{item.Difficulty}}</td>
+                                    <td ng-init="item.Degree = 1">
+                                        <input type="number" class="form-control" style="width:63px" min="1" ng-model="item.Degree"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <ul uib-pagination total-items="cTotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="ccurrentPage" boundary-links="true" num-pages="numPages" ng-change="cpageChanged()"></ul>
+
+                </div>
+
+            
+        </div>
+    </div>
+
+    
+
+</div>
+<script>
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+    var app = angular.module("myApp", ['ui.bootstrap', 'checklist-model']);
+    app.controller('myCtrl', function ($scope, $http , $window) {
+        $scope.itemsPerPage = 15;
+        $scope.loading = false;
+
+        $scope.ccurrentPage = 1;
+        $scope.cTotalRows = 0;
+        $scope.citems = [];
+        $scope.checked = [];
+
+        var examSettings = JSON.parse(sessionStorage.examSettings);
+
+        $scope.loadClassified = function (page) {
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'MannualItems/' + page,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.citems = res.data.Items;
+                $scope.cTotalRows = res.data.TotalRows;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.cpageChanged = function () {
+            $scope.loadClassified($scope.ccurrentPage);
+        }
+
+
+        $scope.loadClassified(1);
+
+        $scope.assign = function (itms) {
+
+            var exam_marks = examSettings.mark;
+            var exam_examid = examSettings.examId;
+            var exam_groupid = examSettings.grpId;
+
+            console.log(examSettings)
+
+            console.log(itms)
+
+        }
+
+
+
+    });
+    app.filter("trust", ['$sce', function ($sce) {
+        return function (htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }]);
+
+</script>

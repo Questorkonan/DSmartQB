@@ -1,0 +1,246 @@
+﻿
+@{
+    ViewBag.Title = "CongitiveLevel";
+}
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div class="page-header">
+        <h1 class="page-title">
+            Congitive Level
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary btn-spacey dropdown-toggle" data-toggle="dropdown">
+                            Add Congitive
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
+                            @*<a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>*@
+                        </div>
+
+                    </div>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+                    <ul class="list-unstyled list-separated">
+                        <li class="list-separated-item" ng-repeat="co in congitives">
+                            <div class="row align-items-center">
+
+                                <div class="col">
+                                    <div>
+                                        <a href="javascript:void(0)" class="text-inherit">{{co.Name}}</a>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="item-action dropdown">
+                                        <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(co)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteCongitive(co)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
+                    @*<ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>*@
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Congitive Level</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="mannual" novalidate>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-modx"></i>
+                                </span>
+                                <input type="text" class="form-control" name="cong" placeholder="Congitive Level" ng-model="configName" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="saveConfig(configName)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update <span class="text-indigo">[{{congitive.Name}}]</span></h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="update" novalidate>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fa fa-modx"></i>
+                                </span>
+                                <input type="text" class="form-control" name="group" placeholder="group" ng-model="congitive.Name" required>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="update.$invalid" ng-click="edit(congitive)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload']);
+    app.controller('myCtrl', function ($scope, $http, Upload, $timeout) {
+
+        $scope.configName = '';
+        $scope.congitive = {};
+        $scope.congitives = [];
+
+
+        $scope.loadCongitives = function () {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListCongitives',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.congitives = res.data;
+                console.log($scope.congitives)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadCongitives();
+
+        $scope.saveConfig = function (str) {
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AddCongitive",
+                headers: config.headers,
+                data: JSON.stringify(str)
+            }
+
+            $http(req).then(function (res) {
+
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'DSmartQB.');
+                    $scope.configName = '';
+
+                } else {
+                    toastr.success(res.data.Value, 'DSmartQB.');
+                    $scope.loadCongitives();
+                    $scope.configName = '';
+                }
+
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadUpdate = function (item) {
+
+            $scope.congitive = item
+        }
+
+        $scope.edit = function (item) {
+
+            var model = {
+                ID: item.Id,
+                Name: item.Name
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "UpdateCongitive",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.loadCongitives();
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+        $scope.deleteCongitive = function (item) {
+            if (confirm('Are you sure .. ?')) {
+
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteCongitive/" + item.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.lista(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+    });
+
+
+</script>
+
+

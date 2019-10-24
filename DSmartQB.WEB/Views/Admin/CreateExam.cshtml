@@ -1,0 +1,282 @@
+﻿
+@{
+    ViewBag.Title = "CreateExam";
+}
+<style>
+    .am-pm > .btn {
+        margin-top: -16px;
+    }
+</style>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div class="page-header">
+        <h1 class="page-title">
+            Create Exam
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+                    <form name="mannual" novalidate>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-5">
+                                <div class="form-group">
+                                    <label class="form-label">Exam</label>
+                                    <input type="text" class="form-control" placeholder="Exam" name="name" ng-model="Exam.name" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label">Duration (in Mins)</label>
+                                    <input type="number" class="form-control" placeholder="Duration" name="duration" ng-model="Exam.duration" min="60" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Start Date</label>
+
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" datetime-picker="yyyy-MM-dd HH:mm" datepicker-options="dateOptions" ng-model="Exam.startDate" is-open="isOpen" readonly="readonly" required />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="openCalendar($event, prop)"><i class="fe fe-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Exam Type</label>
+                                    <select class="form-control" name="type" ng-model="Exam.type" required>
+                                        <option value="Mannual">Mannual</option>
+                                        <option value="Automatic">Automatic</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Course</label>
+                                    <select class="form-control" ng-model="Exam.courseId"
+                                            data-ng-options="t as t.Name for t in courses" required>
+                                        <option value="">Select Course</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Group</label>
+                                    <select class="form-control" ng-model="Exam.groupId"
+                                            data-ng-options="t as t.Name for t in groups" required>
+                                        <option value="">Select Group</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Supervisor</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="text" class="form-control" uib-typeahead="tchr as tchr.Fullname for tchr in teachers | filter:$viewValue" placeholder="Search for..." name="name" ng-model="Exam.supervisor" required>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-1">
+                                <div class="form-group">
+                                    <label class="form-label">Marks</label>
+                                    <input type="number" class="form-control" placeholder="Marks" min="10" name="marks" ng-model="Exam.marks" required>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="saveCreate(Exam)">Save changes</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ui.bootstrap.datetimepicker']);
+    app.controller('myCtrl', function ($scope, $http, $timeout,$window) {
+        $scope.courses = [];
+        $scope.groups = [];
+
+
+        $scope.dateOptions = {
+            minDate: new Date()
+        };
+
+        $scope.teachers = [];
+
+        $scope.loadTeachers = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'ListTeachers',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.teachers = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadTeachers();
+
+
+
+        $scope.loadCourses = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadCourses',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.courses = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadCourses();
+
+        $scope.loadGroups = function () {
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadGroups',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.groups = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadGroups();
+
+        $scope.Exam = {
+            'name': null,
+            'duration': 60,
+            'startDate': new Date(),
+            'type': 'Mannual',
+            'marks': 10,
+            'groupId': null,
+            'courseId': null,
+            'supervisor': null
+        };
+
+        $scope.loading = false;
+
+
+
+
+
+        $scope.saveCreate = function (ex) {
+
+
+            if (typeof ex.supervisor === 'string') {
+                toastr.error('Invalid supervisor', 'DSmartQB')
+            } else {
+
+                $scope.Exam.supervisor = $scope.Exam.supervisor.Id;
+                $scope.Exam.groupId = $scope.Exam.groupId.Id;
+                $scope.Exam.courseId = $scope.Exam.courseId.Id;
+
+                var exam = new Object();
+                exam.name = $scope.Exam.name;
+                exam.courseId = $scope.Exam.courseId;
+                exam.duration = $scope.Exam.duration
+                exam.groupId = $scope.Exam.groupId;
+                exam.mark = $scope.Exam.marks;
+                exam.startDate = $scope.Exam.startDate;
+                exam.supervisor = $scope.Exam.supervisor;
+                exam.type = $scope.Exam.type;
+
+
+            var req = {
+                method: 'POST',
+                url: apiurl +"AddExam",
+                headers: config.headers,
+                data: exam
+            }
+
+            $http(req).then(function (res) {
+                if (res.data.Key == '0') {
+                    toastr.error(res.data.Value, 'Error');
+                } else {
+
+                    console.log(res.data)
+
+                    var obj = new Object();
+                    obj.examId = res.data.ReturnId;
+                    obj.grpId = exam.groupId;
+                    obj.mark = exam.mark;
+
+                    sessionStorage.examSettings = JSON.stringify(obj);
+
+
+
+                    toastr.success(res.data.Value, 'Success');
+
+                    if (exam.type == 'Mannual'){
+
+                        $window.location.href = '@Url.Action("CreateMannual")';
+
+                    } else {
+
+                           $window.location.href = '@Url.Action("CreateBluePrint")';
+
+                    }
+
+                }
+            }, function (err) {
+                console.log(err)
+            });
+
+
+            }
+
+        }
+
+
+
+        $scope.isOpen = false;
+
+        $scope.openCalendar = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            $scope.isOpen = true;
+        };
+
+    });
+
+
+</script>
