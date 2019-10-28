@@ -102,4 +102,21 @@ namespace DSmartQB.CORE.DTOs
         public Answer Answer { get; set; }
         public Item Item { get; set; }
     }
+
+    public class Ids
+    {
+        public string QId { get; set; }
+        public string ExamId { get; set; }
+    }
+
+
+    public class Question
+    {
+        public string Id { get; set; }
+        public string Stem { get; set; }
+        public string Type { get; set; }
+        public int Degree { get; set; }
+    }
+
+
 }

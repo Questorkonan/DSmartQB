@@ -1179,6 +1179,7 @@
     <Content Include="Template\TF.docx" />
     <Content Include="Views\Admin\CreateMannual.cshtml" />
     <Content Include="Views\Admin\CreateBluePrint.cshtml" />
+    <Content Include="Views\Admin\Preview.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

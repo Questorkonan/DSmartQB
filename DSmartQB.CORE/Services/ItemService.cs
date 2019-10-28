@@ -32,8 +32,19 @@ namespace DSmartQB.CORE.Services
             return Item;
         }
 
+        public bool IsPublishedExam(string QuestionId)
+        {
+            string query = $"EXECUTE SP_GetExamPublishedStatus '{QuestionId}'";
+            return _db.Database.SqlQuery<bool>(query).FirstOrDefault();
+        }
+
         public ReturnMessage EditMWQ(MCQ model)
         {
+
+            bool flag = IsPublishedExam(model.Item.Id);
+            List<Ids> Ids = new List<Ids>();
+
+
             #region Item
 
             string itemQuery = "";
@@ -47,6 +58,14 @@ namespace DSmartQB.CORE.Services
             {
                 itemQuery = $"EXECUTE dbo.SP_EditMWQAssociate '{model.Item.Id}', '{model.Item.Stem}', {model.Item.Duration}, '{model.Item.ILoId}', '{model.Item.Level}'";
                 _db.Database.SqlQuery<string>(itemQuery).FirstOrDefault();
+            }
+
+            if (!flag)
+            {
+                // Update ItemArchieve
+
+                string query = $"EXECUTE dbo.SP_UndateItemArchieve '{model.Item.Id}', '{model.Item.Stem}', {model.Item.Duration}, '{model.Item.Level}'";
+                Ids = _db.Database.SqlQuery<Ids>(query).ToList();
             }
 
             #endregion
@@ -66,6 +85,26 @@ namespace DSmartQB.CORE.Services
             }
 
 
+
+            if (!flag)
+            {
+
+                foreach (var Id in Ids)
+                {
+                    string deleteansArchQuery = $"EXECUTE dbo.SP_DeleteAnswersArchBasedOnQuestion '{Id.QId}'";
+                    _db.Database.SqlQuery<string>(deleteansArchQuery).FirstOrDefault();
+
+                    foreach (var answer in model.Answers)
+                    {
+
+                        string archquery = $"EXECUTE dbo.SP_CreateArchieveAlternatives '{Id.QId}','{answer.Text}','{answer.Status}','{Id.ExamId}'";
+                        _db.Database.SqlQuery<string>(archquery).FirstOrDefault();
+                    }
+
+                }
+
+            }
+
             #endregion
 
             return ans;
@@ -75,6 +114,10 @@ namespace DSmartQB.CORE.Services
 
         public ReturnMessage EditTF(TF model)
         {
+
+            bool flag = IsPublishedExam(model.Item.Id);
+            List<Ids> Ids = new List<Ids>();
+
             #region Item
 
             string itemQuery = "";
@@ -90,6 +133,17 @@ namespace DSmartQB.CORE.Services
                 _db.Database.SqlQuery<string>(itemQuery).FirstOrDefault();
             }
 
+            if (!flag)
+            {
+                // Update ItemArchieve
+
+                string query = $"EXECUTE dbo.SP_UndateItemArchieve '{model.Item.Id}', '{model.Item.Stem}', {model.Item.Duration}, '{model.Item.Level}'";
+                Ids = _db.Database.SqlQuery<Ids>(query).ToList();
+
+            }
+
+
+
             #endregion
 
             #region Answers
@@ -103,6 +157,23 @@ namespace DSmartQB.CORE.Services
 
             string aquery = $"EXECUTE dbo.SP_CreateAnswerAlternative '{model.Item.Id}','{model.Answer.Text}','{model.Answer.Status}'";
             ans = _db.Database.SqlQuery<ReturnMessage>(aquery).FirstOrDefault();
+
+
+
+            if (!flag)
+            {
+
+                foreach (var Id in Ids)
+                {
+                    string deleteansArchQuery = $"EXECUTE dbo.SP_DeleteAnswersArchBasedOnQuestion '{Id.QId}'";
+                    _db.Database.SqlQuery<string>(deleteansArchQuery).FirstOrDefault();
+
+
+                    string archquery = $"EXECUTE dbo.SP_CreateArchieveAlternatives '{Id.QId}','{model.Answer.Text}','{model.Answer.Status}','{Id.ExamId}'";
+                    _db.Database.SqlQuery<string>(archquery).FirstOrDefault();
+                }
+
+            }
 
             #endregion
 

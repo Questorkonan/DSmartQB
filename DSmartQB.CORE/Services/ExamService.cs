@@ -9,6 +9,14 @@ namespace DSmartQB.CORE.Services
     {
         DSmartQBContext _db = new DSmartQBContext();
 
+
+        public SpecifedExam LoadSpecifiedExam(string Id)
+        {
+            string query = $"EXECUTE dbo.SP_LoadSpecifiedExam '{Id}'";
+            var SpecifiedExam = _db.Database.SqlQuery<SpecifedExam>(query).FirstOrDefault();
+            return SpecifiedExam;
+        }
+
         public ExamPagination ListExams(int page)
         {
             var pagination = new ExamPagination();
@@ -31,6 +39,13 @@ namespace DSmartQB.CORE.Services
             return pagination;
         }
 
+        public string UpdateSetting(SpecifedExam model)
+        {
+            string query = $"EXECUTE dbo.SP_UpdateSetting '{model.Id}','{model.Name}','{model.GroupId}','{model.Duration}','{model.Mark}','{model.StartDate}'";
+            string message = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+
+            return message;
+        }
         public ReturnMessage AddSetting(ExamPost model)
         {
             ReturnMessage message = new ReturnMessage();
@@ -40,6 +55,126 @@ namespace DSmartQB.CORE.Services
 
             return message;
         }
+
+        //
+
+        public string ArchieveItems(List<ArchieveItems> Items)
+        {
+            string message = "";
+            ReturnMessage QuestionValidate = new ReturnMessage();
+
+
+            #region Original Items
+
+            foreach (var item in Items)
+            {
+
+                string getOriginalItem = $"EXECUTE dbo.SP_OriginalItem '{item.Id}','{item.ExamId}',{item.Degree}";
+                QuestionValidate = _db.Database.SqlQuery<ReturnMessage>(getOriginalItem).FirstOrDefault();
+                if (QuestionValidate.Key == 1)
+                {
+                    // Add Answers
+
+                    string applyAnswersArchieve = $"EXECUTE dbo.SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{item.ExamId}'";
+                    message = _db.Database.SqlQuery<string>(applyAnswersArchieve).FirstOrDefault();
+                }
+
+            }
+
+            #endregion
+
+            return message;
+        }
+
+        public string UpdatePreview(PreviewObj model)
+        {
+            string message = "";
+
+            #region Update Archieve Item
+
+            string question = $"EXECUTE dbo.SP_UpdateArchieveItem '{model.Question.Id}','{model.Question.ExamId}','{model.Question.Stem}'";
+            _db.Database.SqlQuery<string>(question).FirstOrDefault();
+
+            #endregion
+
+
+            #region  Delete Old Archieve Answers
+
+
+            string remove = $"EXECUTE dbo.SP_RemoveArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}'";
+            message = _db.Database.SqlQuery<string>(remove).FirstOrDefault();
+
+
+
+            #endregion
+
+
+            #region Add New Archieve Answers 
+
+            foreach (var answer in model.Answers)
+            {
+                string add = $"EXECUTE dbo.SP_AddArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}','{answer.Text}','{answer.Status}'";
+                _db.Database.SqlQuery<string>(add).FirstOrDefault();
+            }
+
+            #endregion
+
+            return message;
+        }
+
+        public string Publish(Publish model)
+        {
+            string Message = "";
+
+            foreach (var Question in model.Questions)
+            {
+                #region Correct Answer
+                
+                string correctAnswerQuery = $"EXECUTE dbo.SP_GetCorrectAnswer '{Question.Id}'";
+                string CorrectAnswer = _db.Database.SqlQuery<string>(correctAnswerQuery).FirstOrDefault();
+
+                #endregion
+
+                string getGroupId = $"EXECUTE dbo.SP_GetSpecifedGroupId '{model.ExamId}'";
+                string GroupId = _db.Database.SqlQuery<string>(getGroupId).FirstOrDefault();
+
+                List<string> UserIds = new List<string>();
+                string userIdsQuery = $"EXECUTE dbo.SP_GetUsersByGroup '{GroupId}'";
+                UserIds = _db.Database.SqlQuery<string>(userIdsQuery).ToList();
+
+                foreach (var UserId in UserIds)
+                {
+                    #region Add Item To Exam
+
+                    string insertIntoExam = $"EXECUTE dbo.SP_InserItemExam '{model.ExamId}','{UserId}','{Question.Id}','{CorrectAnswer}',{Question.Degree},'{Question.Type}'";
+                    Message = _db.Database.SqlQuery<string>(insertIntoExam).FirstOrDefault();
+
+                    #endregion
+                }
+
+            }
+
+            string isPublished = $"EXECUTE dbo.SP_PublishExamStatus '{model.ExamId}'";
+            Message = _db.Database.SqlQuery<string>(isPublished).FirstOrDefault();
+
+
+            return Message;
+        }
+
+        
+
+
+        public ExamItemsPagination PreviewForSelect(string examId)
+        {
+            ExamItemsPagination pagination = new ExamItemsPagination();
+
+            string query1 = $"EXECUTE dbo.SP_PreviewForSelect '{examId}'";
+            pagination.Items = _db.Database.SqlQuery<MannualItems>(query1).ToList();
+            
+            return pagination;
+
+        }
+
 
         public ExamItemsPagination MannualItems(int page)
         {
@@ -54,6 +189,56 @@ namespace DSmartQB.CORE.Services
 
 
             return pagination;
+        }
+
+        public string DeleteExam(string id)
+        {
+            string query = $"EXECUTE dbo.SP_DeleteExam '{id}'";
+            string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            return user;
+        }
+
+        public string DeleteItemArchieve(string id)
+        {
+            string query = $"EXECUTE dbo.SP_DeleteItemArchieve '{id}'";
+            string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            return user;
+        }
+
+        public Preview Preview(string Id)
+        {
+
+            List<Question> Questions = new List<Question>();
+            ExamHeader Header = new ExamHeader();
+            List<ExamBody> ExamBody = new List<ExamBody>();
+            List<Answer> Answers = new List<Answer>();
+
+
+            string HeaderQuery = $"EXECUTE dbo.SP_GetExamHeader '{Id}'";
+            Header = _db.Database.SqlQuery<ExamHeader>(HeaderQuery).FirstOrDefault();
+
+
+            string query = $"EXECUTE dbo.SP_GetQuestionsByExamId '{Id}'";
+            Questions = _db.Database.SqlQuery<Question>(query).ToList();
+
+            foreach (var item in Questions)
+            {
+
+                string AnswersQuery = $"EXECUTE dbo.SP_GetQuestionsAnswersByQuestionId '{item.Id}', '{Id}'";
+                Answers = _db.Database.SqlQuery<Answer>(AnswersQuery).ToList();
+
+                ExamBody.Add(new ExamBody { Question = item, Answers = Answers });
+
+            }
+
+
+            Preview prev = new Preview()
+            {
+                Header = Header,
+                ExamBody = ExamBody
+            };
+
+            return prev;
         }
 
 

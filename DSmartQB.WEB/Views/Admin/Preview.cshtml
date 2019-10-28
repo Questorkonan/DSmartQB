@@ -1,0 +1,508 @@
+﻿
+@{
+    ViewBag.Title = "Preview";
+}
+
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+
+    <div ng-if="!Items.Header.Published">
+        <div class="alert alert-warning" ng-if="Items.Header.CurrentMark != Items.Header.Mark">
+            <b>The Current Marks <del>[{{Items.Header.CurrentMark}}]</del> must be equal to [{{Items.Header.Mark}}]</b>
+            , <b>Click <a href="javascript:void(0)" class="badge badge-success" data-toggle="modal" data-target="#additemModal" ng-click="loadItemGrid()"><i class="fe fe-plus"></i></a> to add new Items</b>
+        </div>
+
+    </div>
+
+    <div class="page-header">
+        <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+        <h1 class="page-title">
+            {{Items.Header.Name}}
+        </h1>
+
+
+        <button type="button" class="btn btn-primary ml-auto"  ng-if="!Items.Header.Published" ng-disabled="Items.Header.CurrentMark != Items.Header.Mark" ng-click="publish()">
+            <i class="fe fe-activity"></i>
+            Publish
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-md-12" ng-repeat="Ques in Items.ExamBody">
+            <div class="card">
+                <div class="card-status bg-blue"></div>
+                <div class="card-header">
+                    
+
+                    <a href="javascript:void(0)"  ng-if="!Items.Header.Published" data-toggle="modal" data-target="#itemModal" ng-click="loadEdit(Ques)">
+
+                        <h3 class="card-title" style="margin-top: 7px;" ng-bind-html="Ques.Question.Stem | trust"></h3>
+                    </a>
+
+
+                        <h3 class="card-title" ng-if="Items.Header.Published" style="margin-top: 7px;" ng-bind-html="Ques.Question.Stem | trust"></h3>
+                    
+
+
+                    <div class="card-options">
+                        <a href="javascript:void(0)" class="badge badge-primary" style="color:white;font-size: large;" title="Mark">{{Ques.Question.Degree}}</a>
+                        <a href="javascript:void(0)" class="text-primary"   ng-if="!Items.Header.Published" ng-click="loadEdit(Ques)" data-toggle="modal" data-target="#itemModal"><i class="fe fe-edit" style="font-size: 2rem !important;"></i></a>
+                        <a href="javascript:void(0)" class="text-danger"   ng-if="!Items.Header.Published" ng-click="delete(Ques.Question)"><i class="fe fe-trash" style="font-size: 2rem !important;"></i></a>
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" ng-repeat="ans in Ques.Answers">
+                            <div class="custom-controls-stacked" ng-if="Ques.Question.Type != 'TF'">
+                                <label class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="{{Ques.Id}}" ng-checked="ans.Status" disabled ng-model="ans.Id">
+                                    <div class="custom-control-label" ng-bind-html="ans.Text | trust"></div>
+                                </label>
+                            </div>
+
+                            <span ng-if="Ques.Question.Type == 'TF'">
+                                <label class="custom-switch">
+                                    <input type="checkbox" name="custom-switch-checkbox" class="custom-switch-input" ng-checked="ans.Status" disabled ng-model="ans.Id">
+                                    <span class="custom-switch-indicator"></span>
+                                    <span class="custom-switch-description"></span>
+                                </label>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="itemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Item</h5>
+
+                </div>
+                <div class="modal-body">
+                    <form name="itemFrm" novalidate>
+                        <div class="form-group">
+                            <label><b>Question</b></label>
+                            <ng-ckeditor id="test" name="item" ng-model="question.Question.Stem"
+                                         ng-config="config"></ng-ckeditor>
+                        </div>
+
+                        <div class="form-group" ng-if="question.Question.Type == 'MCQ'">
+                            <label></label>
+                            <div class="table-responsive">
+                                <table class="table card-table table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th>Correct</th>
+                                            <th>
+                                                Answer
+                                            </th>
+                                            <th>
+                                                <button class="btn btn-sm btn-primary" ng-click="addAnswer()"><span class="fe fe-plus"></span></button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="ans in question.Answers">
+                                            <td>
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" name="correct" ng-model="ans.Status" ng-click="updateSelection($index, question.Answers);$event.stopPropagation()">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <ng-ckeditor id="test" ng-model="ans.Text"
+                                                             ng-config="config"></ng-ckeditor>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger" ng-click="removeAnswer($index)"><span class="fe fe-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-if="question.Question.Type == 'MRQ'">
+                            <label></label>
+                            <div class="table-responsive">
+                                <table class="table card-table table-striped table-vcenter">
+                                    <thead>
+                                        <tr>
+                                            <th>Correct</th>
+                                            <th>
+                                                Answer
+                                            </th>
+                                            <th>
+                                                <button class="btn btn-sm btn-primary" ng-click="addAnswer()"><span class="fe fe-plus"></span></button>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="ans in question.Answers">
+                                            <td>
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" name="correct" ng-model="ans.Status">
+                                                    <span class="custom-control-label"></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <ng-ckeditor id="test" ng-model="ans.Text"
+                                                             ng-config="config"></ng-ckeditor>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger" ng-click="removeAnswer($index)"><span class="fe fe-trash"></span></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-if="question.Question.Type == 'TF'">
+                            <label></label>
+                            <label class="custom-switch">
+                                <input type="checkbox" name="tf" class="custom-switch-input" ng-model="question.Answers[0].Status" ng-change="changeVal(tf)">
+                                <span class="custom-switch-indicator"></span>
+                                <span class="custom-switch-description"></span>
+                            </label>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="itemFrm.$invalid" ng-click="saveCreate(question)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade bd-example-modal-lg" id="additemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Item</h5>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="cloading"></div>
+                </div>
+                <div class="modal-body">
+                    <form name="AdditemFrm" novalidate>
+
+                        <div class="table-responsive" style="overflow-y: scroll;height: 400px;">
+                            <table class="table card-table table-striped table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Item</th>
+                                        <th>Type</th>
+                                        <th>Duration</th>
+                                        <th>Difficulty</th>
+                                        <th>Mark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in citems">
+                                        <td>
+                                            <input type="checkbox" checklist-model="checked" name="Id" checklist-value="item">
+                                        </td>
+                                        <td>
+                                            <p class="question-text text-capitalize text-dark" ng-bind-html="item.Name | trust">
+                                        </td>
+                                        <td>
+                                            <span ng-class="{'badge badge-primary' : item.Type == 'MCQ' , 'badge badge-success' : item.Type == 'TF' , 'badge badge-info' : item.Type == 'MRQ'}">{{item.Type}}</span>
+                                        </td>
+                                        <td>{{item.Duration}}</td>
+                                        <td><span ng-class="{'status-icon bg-success' : item.Difficulty == 'Mild' , 'status-icon bg-primary' : item.Difficulty == 'Normal', 'status-icon bg-danger' : item.Difficulty == 'Strong'}"></span>{{item.Difficulty}}</td>
+                                        <td ng-init="item.Degree = 1">
+                                            <input type="number" class="form-control" style="width:63px" min="1" ng-model="item.Degree" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!checked.length" ng-click="assign(checked)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", ['ui.bootstrap', 'ng.ckeditor', 'checklist-model']);
+    app.controller('myCtrl', function ($scope, $http,$window) {
+
+
+        var ExamId = JSON.parse(sessionStorage.examId);
+
+        $scope.Items = [];
+        $scope.loading = false;
+        $scope.question = {};
+
+        $scope.ccurrentPage = 1;
+        $scope.cTotalRows = 0;
+        $scope.citems = [];
+        $scope.checked = [];
+        $scope.itemsPerPage = 15;
+        $scope.cloading = false;
+
+        $scope.loadClassified = function () {
+            $scope.cloading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'PreviewForSelect/' + ExamId,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.cloading = false;
+                $scope.citems = res.data.Items;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+
+        $scope.sum = function (items, prop) {
+            return items.reduce(function (a, b) {
+                return a + b[prop];
+            }, 0);
+        };
+
+        $scope.assign = function (checkedArr) {
+
+            var totalMark = $scope.Items.Header.Mark
+            var currentMark = $scope.Items.Header.CurrentMark;
+
+            var marks = Number($scope.sum(checkedArr, 'Degree') + currentMark);
+
+            console.log('totalMark : ' + totalMark + ' and currentMark : ' + currentMark + ' and marks : ' + marks)
+
+
+            if (marks > totalMark) {
+                toastr.error('Selected items marks [' + marks + '] is more than exam mark [' + totalMark + ']', 'DSmartQB')
+            }
+            else if (marks < totalMark) {
+                toastr.error('Selected items marks [' + marks + '] is less than exam mark [' + totalMark + ']', 'DSmartQB')
+            }
+            else {
+
+                for (var i in checkedArr) {
+                    checkedArr[i].ExamId = ExamId;
+                }
+
+
+                var req = {
+                    method: 'POST',
+                    url: apiurl + "ArchieveItems",
+                    headers: config.headers,
+                    data: checkedArr
+                }
+
+                $http(req).then(function (res) {
+                    
+                    $('#additemModal').modal('hide');
+                    $scope.lista();
+
+                })
+
+
+            }
+        }
+
+        $scope.cpageChanged = function () {
+            $scope.loadClassified($scope.ccurrentPage);
+        }
+
+
+        $scope.config = {};
+        $scope.config.toolbarGroups = [
+            { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+            { name: 'clipboard', groups: ['clipboard', 'undo'] },
+            { name: 'editing', groups: ['find', 'selection', 'spellchecker', 'editing'] },
+            { name: 'forms', groups: ['forms'] },
+            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi', 'paragraph'] },
+            { name: 'links', groups: ['links'] },
+            { name: 'insert', groups: ['insert'] },
+            { name: 'styles', groups: ['styles'] },
+            { name: 'colors', groups: ['colors'] },
+            { name: 'document', groups: ['mode', 'document', 'doctools'] },
+            { name: 'tools', groups: ['tools'] },
+            { name: 'others', groups: ['others'] },
+            { name: 'about', groups: ['about'] }
+        ];
+        $scope.config.removeButtons = 'BGColor,Anchor,Subscript,Superscript,Paste,Copy,Cut,Undo,Redo';
+
+        $scope.loadItemGrid = function () {
+
+            $scope.loadClassified();
+
+        }
+
+
+        $scope.saveCreate = function (question) {
+
+
+            var Ques = new Object();
+            Ques.Question = {
+                'Id': question.Question.Id,
+                'Stem': question.Question.Stem,
+                'Type': question.Question.Type,
+                'ExamId': ExamId
+            }
+
+            Ques.Answers = question.Answers
+
+
+            var reqList = {
+                method: 'POST',
+                url: apiurl + 'UpdatePreview',
+                headers: config.headers,
+                data: Ques
+            }
+
+            $http(reqList).then(function (res) {
+                toastr.success(res.data, "DSmartQB")
+                $scope.lista();
+                $('#itemModal').modal('hide');
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+        $scope.loadEdit = function (item) {
+            $scope.question = item;
+            console.log($scope.question)
+        }
+
+        $scope.addAnswer = function () {
+            $scope.question.Answers.push({ Text: '', Status: false })
+        }
+
+        $scope.removeAnswer = function (idx, obj) {
+            var index = $scope.question.Answers.indexOf(idx);
+            $scope.question.Answers.splice(index, 1);
+        }
+
+
+        $scope.lista = function () {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'PreviewExam/' + ExamId,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.Items = res.data;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.lista();
+
+
+        $scope.updateSelection = function (position, entities) {
+            angular.forEach(entities, function (subscription, index) {
+                if (position != index)
+                    subscription.Status = false;
+            });
+        }
+
+
+        $scope.delete = function (item) {
+            if (confirm('Are you sure .. ?')) {
+
+                console.log(item)
+
+                var req = {
+                    method: 'Delete',
+                    url: apiurl + "DeleteItemArchieve/" + item.Id,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.lista();
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+        }
+
+        $scope.publish = function () {
+
+
+            $scope.loading = true;
+
+            var arr = [];
+
+            angular.forEach($scope.Items.ExamBody, function (value, key) {
+                arr.push(value.Question);
+            }); 
+
+
+            var obj = {
+                Questions: arr,
+                ExamId: ExamId
+            }
+
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "Publish",
+                headers: config.headers,
+                data: obj
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.lista();
+                
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
+
+    });
+    app.filter("trust", ['$sce', function ($sce) {
+        return function (htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }]);
+
+
+</script>
+

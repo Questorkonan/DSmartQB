@@ -25,7 +25,7 @@
                             <div class="col-sm-6 col-md-5">
                                 <div class="form-group">
                                     <label class="form-label">Exam</label>
-                                    <input type="text" class="form-control" placeholder="Exam" name="name" ng-model="Exam.name" required>
+                                    <input type="text" autocomplete="off" class="form-control" placeholder="Exam" name="name" ng-model="Exam.name" required>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-3">
@@ -79,7 +79,7 @@
                                     <label class="form-label">Supervisor</label>
                                     <div class="row gutters-xs">
                                         <div class="col">
-                                            <input type="text" class="form-control" uib-typeahead="tchr as tchr.Fullname for tchr in teachers | filter:$viewValue" placeholder="Search for..." name="name" ng-model="Exam.supervisor" required>
+                                            <input type="text" class="form-control" autocomplete="off" uib-typeahead="tchr as tchr.Fullname for tchr in teachers | filter:$viewValue" placeholder="Search for..." name="name" ng-model="Exam.supervisor" required>
                                         </div>
 
                                     </div>
@@ -236,8 +236,8 @@
 
                     var obj = new Object();
                     obj.examId = res.data.ReturnId;
-                    obj.grpId = exam.groupId;
                     obj.mark = exam.mark;
+                    obj.grpId = exam.groupId;
 
                     sessionStorage.examSettings = JSON.stringify(obj);
 

@@ -101,6 +101,11 @@
             $scope.loadClassified($scope.ccurrentPage);
         }
 
+        $scope.sum = function (items, prop) {
+            return items.reduce(function (a, b) {
+                return a + b[prop];
+            }, 0);
+        };
 
         $scope.loadClassified(1);
 
@@ -109,10 +114,46 @@
             var exam_marks = examSettings.mark;
             var exam_examid = examSettings.examId;
             var exam_groupid = examSettings.grpId;
+            
 
-            console.log(examSettings)
+            var marks = $scope.sum(itms, 'Degree');
 
-            console.log(itms)
+
+            if (marks > exam_marks) {
+                toastr.error('Selected items marks [' + marks + '] is more than exam mark [' + exam_marks + ']', 'DSmartQB')
+            }
+            else if (marks < exam_marks) {
+                toastr.error('Selected items marks [' + marks + '] is less than exam mark [' + exam_marks + ']', 'DSmartQB')
+            }
+            else {
+
+
+                $scope.loading = true;
+
+                for (var i in itms) {
+                    itms[i].ExamId = exam_examid;
+                }
+
+
+                var req = {
+                    method: 'POST',
+                    url: apiurl + "ArchieveItems",
+                    headers: config.headers,
+                    data: itms
+                }
+
+                $http(req).then(function (res) {
+
+                    $scope.loading = false;
+                    
+                    sessionStorage.examId = JSON.stringify(exam_examid);
+                     $window.location.href = '@Url.Action("Preview")';
+
+
+                })
+
+            }
+
 
         }
 
