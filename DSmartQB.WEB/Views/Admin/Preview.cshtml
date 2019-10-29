@@ -20,10 +20,16 @@
         </h1>
 
 
-        <button type="button" class="btn btn-primary ml-auto"  ng-if="!Items.Header.Published" ng-disabled="Items.Header.CurrentMark != Items.Header.Mark" ng-click="publish()">
+        <button type="button" ng-if="Items.Header.Published" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#exportPaperModal" >
+            <i class="fe fe-corner-left-down"></i>
+            Export paper
+        </button>
+
+        <button type="button" ng-if="!Items.Header.Published" class="btn btn-primary ml-auto" ng-disabled="Items.Header.CurrentMark != Items.Header.Mark" ng-click="publish()">
             <i class="fe fe-activity"></i>
             Publish
         </button>
+
     </div>
     <div class="row">
         <div class="col-md-12" ng-repeat="Ques in Items.ExamBody">
@@ -234,6 +240,75 @@
     </div>
 
 
+
+    <div class="modal fade" id="exportPaperModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <span class="text-indigo">[{{Items.Header.Name}}]</span>
+
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form name="paperExtractFrm" novalidate>
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">No Of Copies</label>
+                                    <div class="row gutters-xs">
+                                        <div class="col">
+                                            <input type="number" class="form-control" name="duration" ng-model="noCopies" min="1" value="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group">
+
+                                    <div class="table-responsive">
+                                        <table class="table card-table table-striped table-vcenter">
+                                            <thead>
+                                                <tr>
+                                                    <th>Copy</th>
+                                                    <th>Ar</th>
+                                                    <th>En</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="n in [].constructor(noCopies) track by $index">
+                                                    <td>
+                                                        <b>Copy No.{{$index+1}}</b>
+                                                    </td>
+                                                    <td>
+                                                        <a href="#"><i class="fe fe-download"></i></a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="#"><i class="fe fe-download"></i></a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 <script>
@@ -257,13 +332,15 @@
         $scope.Items = [];
         $scope.loading = false;
         $scope.question = {};
-
+        $scope.noCopies = 1;
         $scope.ccurrentPage = 1;
         $scope.cTotalRows = 0;
         $scope.citems = [];
         $scope.checked = [];
         $scope.itemsPerPage = 15;
         $scope.cloading = false;
+
+        
 
         $scope.loadClassified = function () {
             $scope.cloading = true;
@@ -496,13 +573,22 @@
         }
 
 
+
+
     });
     app.filter("trust", ['$sce', function ($sce) {
         return function (htmlCode) {
             return $sce.trustAsHtml(htmlCode);
         }
     }]);
-
+    app.filter('range', function () {
+        return function (val, range) {
+            range = parseInt(range);
+            for (var i = 0; i < range; i++)
+                val.push(i);
+            return val;
+        };
+    });
 
 </script>
 

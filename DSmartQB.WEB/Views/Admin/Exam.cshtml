@@ -68,7 +68,7 @@
                             </tr>
                         </tbody>
                     </table>
-
+                    <br />
                     <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
 
 
@@ -160,6 +160,7 @@
             </div>
         </div>
     </div>
+
 
 </div>
 
@@ -279,6 +280,7 @@
              $window.location.href = '@Url.Action("Preview")';
 
         }
+        
 
         $scope.loadUpdate = function (ex) {
 
