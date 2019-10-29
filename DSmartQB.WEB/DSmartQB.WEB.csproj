@@ -1180,6 +1180,8 @@
     <Content Include="Views\Admin\CreateMannual.cshtml" />
     <Content Include="Views\Admin\CreateBluePrint.cshtml" />
     <Content Include="Views\Admin\Preview.cshtml" />
+    <Content Include="Views\Admin\PaperSheetAr.cshtml" />
+    <Content Include="Views\Admin\PaperSheetEn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
