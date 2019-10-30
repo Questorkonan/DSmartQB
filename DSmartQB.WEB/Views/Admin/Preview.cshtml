@@ -238,8 +238,7 @@
             </div>
         </div>
     </div>
-
-
+    
 
     <div class="modal fade" id="exportPaperModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -283,10 +282,10 @@
                                                         <b>Copy No.{{$index+1}}</b>
                                                     </td>
                                                     <td>
-                                                        <a href='@Url.Action("PaperSheetAr")'><i class="fe fe-download"></i></a>
+                                                        <a href='@Url.Action("PaperSheetAr")' target="_blank"><i class="fe fe-download"></i></a>
                                                     </td>
                                                     <td>
-                                                        <a href='@Url.Action("PaperSheetEn")'><i class="fe fe-download"></i></a>
+                                                        <a href='@Url.Action("PaperSheetEn")' target="_blank"><i class="fe fe-download"></i></a>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -333,11 +332,8 @@
         $scope.loading = false;
         $scope.question = {};
         $scope.noCopies = 1;
-        $scope.ccurrentPage = 1;
-        $scope.cTotalRows = 0;
         $scope.citems = [];
         $scope.checked = [];
-        $scope.itemsPerPage = 15;
         $scope.cloading = false;
 
         
@@ -411,7 +407,7 @@
         }
 
         $scope.cpageChanged = function () {
-            $scope.loadClassified($scope.ccurrentPage);
+            $scope.loadClassified();
         }
 
 

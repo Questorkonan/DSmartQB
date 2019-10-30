@@ -3,6 +3,194 @@
     ViewBag.Title = "PaperSheetAr";
     Layout = null;
 }
+<html>
+<head>
+    <title>DSmartQB - Paper Sheet</title>
+    <style>
+        .badge-white {
+            color: black !important;
+            border: 1px solid black;
+        }
+    </style>
 
-<h2>PaperSheetAr</h2>
+    <link href="~/assets/css/dashboard.rtl.css" rel="stylesheet" />
+    <link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="~/assets/js/vendors/jquery-3.2.1.min.js"></script>
+    <script src="~/assets/js/angular/angular.min.js"></script>
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+    <script>
+        function CreatePDFfromHTML() {
+            var HTML_Width = $(".canvas_div_pdf").width();
+            var HTML_Height = $(".canvas_div_pdf").height();
+            var top_left_margin = 15;
+            var PDF_Width = HTML_Width + (top_left_margin * 2);
+            var PDF_Height = (PDF_Width * 1.6) + (top_left_margin * 2);
+            var canvas_image_width = HTML_Width;
+            var canvas_image_height = HTML_Height;
+
+            var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+
+            html2canvas($(".canvas_div_pdf")[0], { allowTaint: true }).then(function (canvas) {
+                canvas.getContext('2d');
+
+                console.log(canvas.height + "  " + canvas.width);
+
+
+                var imgData = canvas.toDataURL("image/jpeg", 1.0);
+                var pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+                pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+
+                for (var i = 1; i <= totalPDFPages; i++) {
+                    pdf.addPage(PDF_Width, PDF_Height);
+                    pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+                }
+
+                pdf.save("HTML-Document.pdf");
+            });
+        }
+    </script>
+
+</head>
+<body style="background-color : white">
+    <br />
+    <button class="btn btn-blue" onclick="CreatePDFfromHTML()">
+        <i class="fa fa-file-pdf-o"></i> Export as .pdf
+    </button>
+
+    <div class="container canvas_div_pdf" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+        <center>ورقة اجابة مقرر دراسى</center>
+        <br />
+        <div class="row">
+
+
+            <div class="col-9">
+                <p>اسم الطالب  ---------------------------------------------------------</p>
+                <p>رقم الجلوس  ------------------</p>
+                <p>اسم المقرر  ------------------</p>
+            </div>
+            <div class="col">
+                <p>الفصل الدراسى  <span class="badge badge-white">1</span>&nbsp;<span class="badge badge-white">2</span></p>
+                <p>رقم النموذج  </p>
+                <p>تاريخ الامتحان  --/--/----</p>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col">
+                <p><strong>تعليمات الاجابة </strong></p>
+                <ul>
+                    <strong>من فضلك التزم بالتعليمات الاتية عند اجابتك على الاسئلة</strong>
+                    <li>استخدم القلم الجاف الازرق فقط لتظليل الدائره التى تمثل اجابتك</li>
+                    <li>اختر <u><b>بديل واحد فقط</b></u> من بدائل الاجابة السوال وظلل الدائره الممثلة امامه بالكامل</li>
+                    <li>لن يتم تصحيح السوال فى حالة اختيار اكثر من بديل (تظليل اكثر من دائره مغلقة)</li>
+                    <li>عدم استخدام الكوريكتور</li>
+                    <li>ظلل اجابتك <span class="fa fa-circle"></span> وليس <span class="fe fe-check-circle"></span> <span class="fe fe-slack"></span> <span class="fe fe-x-circle"></span></li>
+                </ul>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12">
+
+                <div class="table-responsive" style="margin: -4px;" ng-repeat="Ques in Items.ExamBody">
+                    <table class="table">
+
+                        <tr style="color: #495057;background-color: rgba(0, 0, 0, 0.04);">
+                            <th colspan="4">
+                                <span ng-bind-html="Ques.Question.Stem | trust"></span>
+                            </th>
+                        </tr>
+                        <tr ng-if="Ques.Question.Type != 'TF'">
+                            <td ng-repeat="ans in Ques.Answers">
+                                <div class="custom-controls-stacked">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="{{Ques.Id}}">
+                                        <div class="custom-control-label" ng-bind-html="ans.Text | trust"></div>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-if="Ques.Question.Type == 'TF'">
+                            <td>
+                                <div class="custom-controls-stacked">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="example-radios">
+                                        <div class="custom-control-label">Yes</div>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="custom-controls-stacked">
+                                    <label class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="example-radios">
+                                        <div class="custom-control-label">No</div>
+                                    </label>
+                                </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+        var config = {
+            headers: {
+                'contentType': 'application/json;charset=utf-8',
+                'authorization': 'bearer ' + user.access_token
+            }
+        }
+
+        var app = angular.module("myApp", []);
+        app.controller('myCtrl', function ($scope, $http) {
+
+            var ExamId = JSON.parse(sessionStorage.examId);
+            $scope.Items = [];
+
+            $scope.lista = function () {
+
+                $scope.loading = true;
+
+                var reqList = {
+                    method: 'Get',
+                    url: apiurl + 'PreviewExam/' + ExamId,
+                    headers: config.headers
+                }
+
+                $http(reqList).then(function (res) {
+                    $scope.loading = false;
+                    $scope.Items = res.data;
+                    console.log(res.data)
+                }, function (err) {
+                    console.log(err)
+                });
+            }
+
+            $scope.lista();
+
+
+        });
+
+        app.filter("trust", ['$sce', function ($sce) {
+            return function (htmlCode) {
+                return $sce.trustAsHtml(htmlCode);
+            }
+        }]);
+
+
+
+    </script>
+</body>
+</html>

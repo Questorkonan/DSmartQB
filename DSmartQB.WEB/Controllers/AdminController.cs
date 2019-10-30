@@ -146,12 +146,14 @@ namespace DSmartQB.WEB.Controllers
         {
             return View();
         }
+        
 
         [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult PaperSheetEn()
         {
             return View();
         }
+        
 
         [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Report()
