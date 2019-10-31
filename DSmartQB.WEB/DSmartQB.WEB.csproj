@@ -110,6 +110,7 @@
     <Content Include="assets\css\toastr.css" />
     <Content Include="assets\fonts\feather\feather-webfont.svg" />
     <Content Include="assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="assets\images\73225297_431820144139723_3094814177772961792_n.png" />
     <Content Include="assets\images\browsers\android-browser.svg" />
     <Content Include="assets\images\browsers\aol-explorer.svg" />
     <Content Include="assets\images\browsers\blackberry.svg" />
@@ -136,6 +137,7 @@
     <Content Include="assets\images\crypto-currencies\litecoin.svg" />
     <Content Include="assets\images\crypto-currencies\nem.svg" />
     <Content Include="assets\images\crypto-currencies\ripple.svg" />
+    <Content Include="assets\images\dsmart.jpg" />
     <Content Include="assets\images\flags\ad.svg" />
     <Content Include="assets\images\flags\ae.svg" />
     <Content Include="assets\images\flags\af.svg" />
