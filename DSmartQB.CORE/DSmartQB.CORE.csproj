@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTOs\Course.cs" />
+    <Compile Include="DTOs\Dashboard.cs" />
     <Compile Include="DTOs\Exam.cs" />
     <Compile Include="DTOs\Group.cs" />
     <Compile Include="DTOs\Item.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Models\DSmartQBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountService.cs" />
+    <Compile Include="Services\DashboardService.cs" />
     <Compile Include="Services\ExamService.cs" />
     <Compile Include="Services\GroupService.cs" />
     <Compile Include="Services\ItemService.cs" />

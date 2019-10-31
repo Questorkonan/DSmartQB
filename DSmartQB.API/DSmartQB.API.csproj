@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ExamController.cs" />
     <Compile Include="Controllers\GroupController.cs" />
     <Compile Include="Controllers\ItemController.cs" />
