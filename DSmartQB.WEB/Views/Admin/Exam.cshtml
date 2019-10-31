@@ -62,6 +62,7 @@
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="loadpreveiw(ex)"><i class="dropdown-icon fe fe-eye"></i> Preview </a>
                                             <a href="javascript:void(0)" class="dropdown-item" ng-if="!ex.Published" ng-click="loadUpdate(ex)" data-toggle="modal" data-target="#settingModal"><i class="dropdown-icon fe fe-edit"></i> Edit Setting</a>
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteExam(ex)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" ng-if="ex.Published" ng-click="onlineStudents(ex)"><i class="dropdown-icon fe fe-user-check"></i> Online Students </a>
                                         </div>
                                     </div>
                                 </td>
@@ -124,7 +125,7 @@
 
 
                                     <p class="input-group" ng-if="!tab1">
-                                        <input type="text" class="form-control" datetime-picker="yyyy-MM-dd HH:mm" datepicker-options="dateOptions" ng-model="exam.StartDate" is-open="isOpen" required readonly/>
+                                        <input type="text" class="form-control" datetime-picker="yyyy-MM-dd HH:mm" datepicker-options="dateOptions" ng-model="exam.StartDate" is-open="isOpen" required readonly />
                                         <span class="input-group-btn">
                                             <button type="button" class="btn btn-default" ng-click="openCalendar($event, prop)"><i class="fe fe-calendar"></i></button>
                                         </span>
@@ -280,7 +281,12 @@
              $window.location.href = '@Url.Action("Preview")';
 
         }
-        
+
+        $scope.onlineStudents = function (ex) {
+
+            sessionStorage.onlineStudentsForExam = JSON.stringify(ex);
+            $window.location.href = '@Url.Action("OnlineStudents")';
+        }
 
         $scope.loadUpdate = function (ex) {
 

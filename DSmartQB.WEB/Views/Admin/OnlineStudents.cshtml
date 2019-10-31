@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "OnlineStudents";
+}
+<style>
+    .online {
+        height: 16px;
+        width: 14px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .offline {
+        height: 16px;
+        width: 14px;
+        background-color: red;
+        border-radius: 50%;
+        display: inline-block;
+    }
+</style>
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="page-header">
+        <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+        <h1 class="page-title">
+            {{Name}}
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body o-auto">
+                    
+                    <div class="table-responsive" style="overflow-y: scroll;height: 400px;">
+                        <table class="table card-table table-striped table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Student</th>
+                                    <th>Joining Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="std in students">
+                                    <td>
+                                        <span ng-class="{'online' : std.Status == 1 ,  'offline': std.Status == 0}"></span>
+                                    </td>
+                                    <td>
+                                        {{std.Student}}
+                                    </td>
+                                    <td>{{std.JoiningDate}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+</div>
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var onlineStudentsForExam = JSON.parse(sessionStorage.onlineStudentsForExam);
+    var ExamId = onlineStudentsForExam.Id;
+
+
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", []);
+    app.controller('myCtrl', function ($scope, $http) {
+        
+        $scope.Name = onlineStudentsForExam.Name;
+        $scope.students = [];
+        $scope.loading = false;
+
+        $scope.lista = function () {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'OnlineStudentsGrid/' + ExamId,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.students = res.data;
+                console.log($scope.students)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.lista();
+
+    });
+</script>

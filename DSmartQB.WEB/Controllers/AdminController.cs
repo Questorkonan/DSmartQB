@@ -8,7 +8,7 @@ namespace DSmartQB.WEB.Controllers
     [Authorize]
     public class AdminController : Controller
     {
-        // GET: Admin
+        
 
         [AllowAnonymous]
         public ActionResult Login()
@@ -128,6 +128,13 @@ namespace DSmartQB.WEB.Controllers
         {
             return View();
         }
+
+        [Authorize(Roles = "Administrator,Teacher")]
+        public ActionResult OnlineStudents()
+        {
+            return View();
+        }
+
 
         [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult CreateBluePrint()

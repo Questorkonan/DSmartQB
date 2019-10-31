@@ -125,6 +125,7 @@ namespace DSmartQB.CORE.Services
         public string Publish(Publish model)
         {
             string Message = "";
+            List<string> UserIds = new List<string>();
 
             foreach (var Question in model.Questions)
             {
@@ -138,7 +139,7 @@ namespace DSmartQB.CORE.Services
                 string getGroupId = $"EXECUTE dbo.SP_GetSpecifedGroupId '{model.ExamId}'";
                 string GroupId = _db.Database.SqlQuery<string>(getGroupId).FirstOrDefault();
 
-                List<string> UserIds = new List<string>();
+                
                 string userIdsQuery = $"EXECUTE dbo.SP_GetUsersByGroup '{GroupId}'";
                 UserIds = _db.Database.SqlQuery<string>(userIdsQuery).ToList();
 
@@ -150,13 +151,27 @@ namespace DSmartQB.CORE.Services
                     Message = _db.Database.SqlQuery<string>(insertIntoExam).FirstOrDefault();
 
                     #endregion
+
+
+
                 }
 
             }
 
+            foreach (var UserId in UserIds)
+            {
+
+
+                #region Online Students
+
+                string onlineStudents = $"EXECUTE dbo.SP_AddOnlineStudents '{model.ExamId}','{UserId}'";
+                Message = _db.Database.SqlQuery<string>(onlineStudents).FirstOrDefault();
+
+                #endregion
+            }
+
             string isPublished = $"EXECUTE dbo.SP_PublishExamStatus '{model.ExamId}'";
             Message = _db.Database.SqlQuery<string>(isPublished).FirstOrDefault();
-
 
             return Message;
         }
@@ -203,6 +218,14 @@ namespace DSmartQB.CORE.Services
             string query = $"EXECUTE dbo.SP_DeleteItemArchieve '{id}'";
             string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
+        }
+
+        public List<OnlineStudentsGrid> OnlineStudentsGrid(string Id)
+        {
+            List<OnlineStudentsGrid> Students = new List<OnlineStudentsGrid>();
+            string query = $"EXECUTE dbo.SP_OnlineStudents '{Id}'";
+            Students = _db.Database.SqlQuery<OnlineStudentsGrid>(query).ToList();
+            return Students;
         }
 
         public Preview Preview(string Id)

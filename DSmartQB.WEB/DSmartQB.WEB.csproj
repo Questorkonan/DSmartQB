@@ -854,6 +854,8 @@
     <Content Include="assets\js\angular\ui-bootstrap-tpls-3.0.5.min.js" />
     <Content Include="assets\js\core.js" />
     <Content Include="assets\js\dashboard.js" />
+    <Content Include="assets\js\html2canvas.js" />
+    <Content Include="assets\js\jspdf.min.js" />
     <Content Include="assets\js\require.min.js" />
     <Content Include="assets\js\toastr.js" />
     <Content Include="assets\js\vendors\bootstrap.bundle.min.js" />
@@ -1215,6 +1217,7 @@
     <Content Include="assets\scss\_rotated-flipped.scss" />
     <Content Include="assets\scss\_stacked.scss" />
     <Content Include="assets\scss\_variables.scss" />
+    <Content Include="Views\Admin\OnlineStudents.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

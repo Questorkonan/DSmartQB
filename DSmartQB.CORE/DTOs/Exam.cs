@@ -126,4 +126,12 @@ namespace DSmartQB.CORE.DTOs
         public string ExamId { get; set; }
     }
 
+    public class OnlineStudentsGrid
+    {
+        public bool Status { get; set; }
+        public string Color { get; set; }
+        public string Student { get; set; }
+        public string JoiningDate { get; set; }
+    }
+
 }

@@ -119,5 +119,13 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+
+        [HttpGet, Route("api/OnlineStudentsGrid/{id}")]
+        public IHttpActionResult OnlineStudentsGrid(string id)
+        {
+            var result = _service.OnlineStudentsGrid(id);
+            return Ok(result);
+        }
+
     }
 }
