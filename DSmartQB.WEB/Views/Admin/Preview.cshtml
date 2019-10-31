@@ -20,7 +20,7 @@
         </h1>
 
 
-        <button type="button" ng-if="Items.Header.Published" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#exportPaperModal" >
+        <button type="button" ng-if="export" class="btn btn-primary ml-auto" data-toggle="modal" data-target="#exportPaperModal" >
             <i class="fe fe-corner-left-down"></i>
             Export paper
         </button>
@@ -335,6 +335,7 @@
         $scope.citems = [];
         $scope.checked = [];
         $scope.cloading = false;
+        $scope.export = false;
 
         
 
@@ -533,9 +534,10 @@
             }
         }
 
+        
         $scope.publish = function () {
 
-
+            
             $scope.loading = true;
 
             var arr = [];
@@ -561,7 +563,8 @@
             $http(req).then(function (res) {
                 toastr.success(res.data, "DSmartQB.")
                 $scope.lista();
-                
+                $scope.export = true;
+
             }, function (err) {
                 console.log(err)
             });
