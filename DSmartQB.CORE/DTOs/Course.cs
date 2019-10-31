@@ -49,4 +49,12 @@ namespace DSmartQB.CORE.DTOs
         public string PlannerId { get; set; }
         public string CongitiveId { get; set; }
     }
+
+    public class ILOBinder
+    {
+        public string Code { get; set; }
+        public string Text { get; set; }
+        public string Congitive { get; set; }
+    }
+
 }

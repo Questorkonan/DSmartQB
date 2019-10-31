@@ -257,8 +257,9 @@ namespace DSmartQB.API.Controllers
                                                 }
                                                 else
                                                 {
-                                                    errorBuilder.AppendLine("<p>Question in Table No <b>(" + index + ")</b> , " + check + " </p>");
-
+                                                    flag = true;
+                                                    errorBuilder.AppendLine("<p>Question in Table No <b>(" + index + ")</b> , " + check.Value + " </p>");
+                                                    break;
                                                 }
 
                                             }

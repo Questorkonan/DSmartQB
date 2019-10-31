@@ -18,9 +18,9 @@
                             Add Subject
                         </button>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#ilosCodeModal"><i class="dropdown-icon fe fe-code"></i> ILOs Code</a>
                             <a class="dropdown-item" href='@Url.Action("CongitiveLevel")'><i class="dropdown-icon fe fe-link"></i> Congitive Level</a>
                             <a class="dropdown-item" href='@Url.Action("CreateSubject")'><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
-                            @*<a class="dropdown-item" href="javascript:void(0)"><i class="dropdown-icon fe fe-upload"></i> Upload</a>*@
                         </div>
 
                     </div>
@@ -61,44 +61,38 @@
     </div>
 
 
-    @*Upload Group*@
 
-    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ilosCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Upload Group</h5>
+                    <h5 class="modal-title">Ilos Code</h5>
                 </div>
                 <div class="modal-body">
-
-                    <form name="attachForm" novalidate>
-                        <div class="form-group">
-                            <label></label>
-                            <a href='@Url.Content("~/Template/Group.xlsx")'>
-
-                                <b><span class="fe fe-download"></span> Download</b>
-                            </a>
-                        </div>
-                        <div class="form-group">
-                            <label></label>
-
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" ngf-select ng-model="subFile" name="groupTemplate" required>
-                                <label class="custom-file-label">Choose file</label>
-                            </div>
-                        </div>
-                    </form>
+                    
+                    <div class="card-body o-auto"  style="overflow-y: scroll;height: 400px;">
+                        <ul class="list-unstyled list-separated">
+                            <li class="list-separated-item" ng-repeat="ilo in ilos">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div>
+                                            <a class="text-inherit">{{ilo.Text}}</a>
+                                        </div>
+                                        <small class="d-block item-except text-sm text-muted h-1x"><b class="text-blue">{{ilo.Code}} [{{ilo.Congitive}}]</b></small>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                    </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" ng-disabled="attachForm.$invalid" ng-click="addBulk(subFile)">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
-
-
 
 </div>
 
@@ -128,6 +122,29 @@
         $scope.TotalRows = 0;
         $scope.Subjects = [];
         $scope.loading = false;
+
+        $scope.ilos = [];
+
+
+        $scope.ilosLista = function () {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'AllIlos',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.ilos = res.data;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.ilosLista();
 
         $scope.lista = function (curr) {
 

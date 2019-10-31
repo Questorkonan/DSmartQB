@@ -84,6 +84,18 @@ namespace DSmartQB.CORE.Services
             return pagination;
         }
 
+        
+        public List<ILOBinder> AllIlos()
+        {
+            #region ILO
+
+            string query1 = $"EXECUTE dbo.SP_GetAllIlos";
+            var pagination = _db.Database.SqlQuery<ILOBinder>(query1).ToList();
+
+            #endregion
+
+            return pagination;
+        }
         public List<ILODto> ListIlos(string id)
         {
             #region Groups

@@ -141,11 +141,11 @@
                         <div class="form-group">
                             <label>Select Type</label>
 
-                            <select class="form-control col-4" ng-model="templateType" ng-change="downloadTemplate(templateType.Type)"
-                                    data-ng-options="t as t.Type for t in types">
+                            <select class="form-control col-4" name="templateType" ng-model="templateType" ng-change="downloadTemplate(templateType.Type)"
+                                    data-ng-options="t as t.Type for t in types" required>
                                 <option value="">Select Type</option>
                             </select>
-
+                            
                         </div>
 
                         <div class="form-group">
@@ -167,7 +167,7 @@
                             <label></label>
 
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" ngf-select ng-model="grpFile" name="groupTemplate" required>
+                                <input type="file"accept=".doc,.docx" class="custom-file-input" ngf-select ng-model="grpFile" name="groupTemplate" required>
                                 <label class="custom-file-label">Choose file</label>
                             </div>
                         </div>
@@ -209,7 +209,7 @@
         $scope.uTotalRows = 0;
         $scope.uitems = [];
 
-        //$scope.templateType = 'MCQ';
+
         $scope.templateType = {};
 
         $scope.slogan = ''
@@ -384,6 +384,12 @@
 
         $scope.UploadItem = function (file) {
 
+
+            if ($scope.templateType.Id == undefined) {
+
+                toastr.error('Select Type', 'DSmartQB')
+                return;
+            }
 
             if ($scope.slogan == 'TF') {
 
