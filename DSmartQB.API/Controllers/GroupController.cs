@@ -133,9 +133,9 @@ namespace DSmartQB.API.Controllers
                 }
                 return BadRequest("No File Uploaded");
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.InnerException.ToString());
             }
 
 

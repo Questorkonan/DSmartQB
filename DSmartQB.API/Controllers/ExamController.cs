@@ -1,6 +1,8 @@
 ﻿using DSmartQB.CORE.DTOs;
 using DSmartQB.CORE.Services;
+using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -125,6 +127,38 @@ namespace DSmartQB.API.Controllers
         {
             var result = _service.OnlineStudentsGrid(id);
             return Ok(result);
+        }
+
+        [HttpPost,Route("api/UniversitySetting")]
+        public IHttpActionResult UniversitySetting()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            var form = httpRequest.Form;
+            string UniversityName = "";
+            try
+            {
+                if (httpRequest.Files.Count > 0)
+                {
+                    foreach (string key in form.AllKeys)
+                    {
+                        UniversityName = form[key];
+                    }
+
+                    foreach (string file in httpRequest.Files)
+                    {
+                        var postedFileBase = httpRequest.Files[file];
+                        if (postedFileBase != null)
+                        {
+                            string fileLocation = HttpContext.Current.Server.MapPath("~/Uploads/") + postedFileBase.FileName;
+                        }
+                    }
+                }
+                return BadRequest("No File Uploaded");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.InnerException.ToString());
+            }
         }
 
     }
