@@ -26,5 +26,28 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet, Route("api/Admins")]
+        public IHttpActionResult Admins()
+        {
+            var result = _service.Admins();
+            return Ok(result);
+        }
+
+
+        [HttpGet, Route("api/ItemsPercentage")]
+        public IHttpActionResult ItemsPercentage()
+        {
+            var result = _service.ItemsPercentage();
+            return Ok(result);
+        }
+
+
+        [HttpGet, Route("api/ExamsPercentage")]
+        public IHttpActionResult ExamsPercentage()
+        {
+            var result = _service.ExamsPercentage();
+            return Ok(result);
+        }
+
     }
 }

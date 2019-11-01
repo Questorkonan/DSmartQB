@@ -502,9 +502,11 @@
     <Content Include="assets\images\payments\worldpay-dark.svg" />
     <Content Include="assets\images\payments\worldpay.svg" />
     <Content Include="assets\js\angular-datepicker.js" />
+    <Content Include="assets\js\angular\angular-chart.min.js" />
     <Content Include="assets\js\angular\angular-route.min.js" />
     <Content Include="assets\js\angular\angular-ui-utils.min.js" />
     <Content Include="assets\js\angular\angular.min.js" />
+    <Content Include="assets\js\angular\Chart.min.js" />
     <Content Include="assets\js\angular\checklist-model.js" />
     <Content Include="assets\js\angular\ckeditor.js" />
     <Content Include="assets\js\angular\config.js" />

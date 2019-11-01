@@ -16,5 +16,24 @@ namespace DSmartQB.CORE.Services
             return cards;
         }
 
+        public List<Admins> Admins()
+        {
+            string query = $"EXECUTE dbo.SP_Admins";
+            var admins = _db.Database.SqlQuery<Admins>(query).ToList();
+            return admins;
+        }
+        public ItemsPercentage ItemsPercentage()
+        {
+            string query = $"EXECUTE dbo.SP_ItemsPercentage";
+            var itemPercentage = _db.Database.SqlQuery<ItemsPercentage>(query).FirstOrDefault();
+            return itemPercentage;
+        }
+
+        public ExamsPercentage ExamsPercentage()
+        {
+            string query = $"EXECUTE dbo.SP_ExamsPercentage";
+            var examPercentage = _db.Database.SqlQuery<ExamsPercentage>(query).FirstOrDefault();
+            return examPercentage;
+        }
     }
 }

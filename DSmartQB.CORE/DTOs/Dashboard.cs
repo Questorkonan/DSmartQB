@@ -15,4 +15,22 @@ namespace DSmartQB.CORE.DTOs
         public int Items { get; set; }
         public int Exams { get; set; }
     }
+
+    public class Admins
+    {
+        public string Username { get; set; }
+        public string Fullname { get; set; }
+    }
+
+    public class ItemsPercentage
+    {
+        public int Classifed { get; set; }
+        public int UnClassifed { get; set; }
+    }
+
+    public class ExamsPercentage
+    {
+        public int Mannual { get; set; }
+        public int Automatic { get; set; }
+    }
 }
