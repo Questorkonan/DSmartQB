@@ -128,6 +128,12 @@ namespace DSmartQB.WEB.Controllers
         {
             return View();
         }
+        
+        [Authorize(Roles = "Administrator,Teacher")]
+        public ActionResult University()
+        {
+            return View();
+        }
 
         [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult OnlineStudents()
