@@ -84,6 +84,15 @@ namespace DSmartQB.CORE.DTOs
         public int Degree { get; set; }
     }
 
+    public class BluePrintParams
+    {
+        public string ExamId { get; set; }
+        public int NoQuestions { get; set; }
+        public int Mild { get; set; }
+        public int Normal { get; set; }
+        public int Hard { get; set; }
+    }
+
     public class ArchieveItems
     {
         public string Id { get; set; }

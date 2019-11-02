@@ -55,6 +55,13 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost, Route("api/MannualItems")]
+        public IHttpActionResult BluePrint([FromBody]BluePrintParams model)
+        {
+            var result = _service.BluePrint(model);
+            return Ok(result);
+        }
+
 
         [HttpGet, Route("api/PreviewForSelect/{id}")]
         public IHttpActionResult PreviewForSelect(string Id)

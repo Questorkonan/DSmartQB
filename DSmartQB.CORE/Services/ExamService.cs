@@ -206,6 +206,31 @@ namespace DSmartQB.CORE.Services
             return pagination;
         }
 
+        public string BluePrint(BluePrintParams model)
+        {
+            string message = "";
+
+            List<ArchieveItems> archieves = new List<ArchieveItems>();
+
+
+
+            #region Mild
+
+            #endregion
+
+
+            #region Normal
+
+            #endregion
+
+
+            #region Strong
+
+            #endregion
+
+            return message;
+        }
+
         public string DeleteExam(string id)
         {
             string query = $"EXECUTE dbo.SP_DeleteExam '{id}'";
