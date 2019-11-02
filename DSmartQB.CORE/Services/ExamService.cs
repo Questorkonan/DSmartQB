@@ -264,6 +264,12 @@ namespace DSmartQB.CORE.Services
             return prev;
         }
 
+        public string AddUniversitySettings(string name , string path)
+        {
+            string query = $"EXECUTE dbo.SP_SheetLogo '{name}','{path}'";
+            string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            return user;
+        }
 
     }
 }

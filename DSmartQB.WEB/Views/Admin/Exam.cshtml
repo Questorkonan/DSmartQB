@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Exam";
 }
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
 <style>
     .am-pm > .btn {
         margin-top: -16px;
@@ -22,7 +23,7 @@
                             Add Exam
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href='@Url.Action("University")'><i class="dropdown-icon fe fe-home"></i> University Setting</a>
+                            <a class="dropdown-item" href='javascript:void(0)'  data-toggle="modal" data-target="#universityModal"><i class="dropdown-icon fe fe-home"></i> University Setting</a>
                             <a class="dropdown-item" href='@Url.Action("CreateExam")'><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
                         </div>
 
@@ -164,7 +165,58 @@
     </div>
 
 
+
+    <div class="modal fade" id="universityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        University Settings
+                    </h5>
+
+                </div>
+                <div class="modal-body">
+                    <form name="universityFrm" novalidate>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Exam</label>
+                                    <input type="text" autocomplete="off" class="form-control" placeholder="Exam" name="name" ng-model="univ.Name" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-12">
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" ngf-select ng-model="univ.Logo" name="groupTemplate" required>
+                                        <label class="custom-file-label">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="universityFrm.$invalid" ng-click="saveLogo(univ)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
 
 <script>
 
@@ -177,8 +229,8 @@
         }
     }
 
-    var app = angular.module("myApp", ['ui.bootstrap', 'ui.bootstrap.datetimepicker']);
-    app.controller('myCtrl', function ($scope, $http,$window) {
+    var app = angular.module("myApp", ['ui.bootstrap','ngFileUpload', 'ui.bootstrap.datetimepicker']);
+    app.controller('myCtrl', function ($scope, $http, Upload,$window) {
         $scope.sub = {};
         $scope.itemsPerPage = 5;
         $scope.currentPage = 1;
@@ -196,6 +248,30 @@
 
         $scope.refresh = function () {
             $scope.tab1 = false;
+        }
+
+
+        $scope.univ = {};
+
+        $scope.saveLogo = function (university) {
+
+
+            Upload.upload({
+                url: apiurl + 'UniversitySetting',
+                data: { file: university.Logo, UniversityName: university.Name },
+                headers: {
+                    'Content-Type': undefined,
+                    'authorization': 'bearer ' + user.access_token
+                }
+            }).then(function (res) {
+                toastr.success(res.data, 'Success');
+                $scope.univ = {};
+                
+            }, function (resp) {
+                console.log('Error status: ' + resp.status);
+            });
+
+
         }
 
         $scope.lista = function (curr) {

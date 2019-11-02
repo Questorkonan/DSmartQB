@@ -2,6 +2,7 @@
 using DSmartQB.CORE.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -14,7 +15,7 @@ namespace DSmartQB.API.Controllers
     {
         ExamService _service = new ExamService();
 
-        
+
         [HttpGet, Route("api/ListExams/{id}")]
         public IHttpActionResult ListExams([FromUri]int id)
         {
@@ -22,7 +23,7 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-       
+
 
 
         [HttpGet, Route("api/LoadSpecifiedExam/{id}")]
@@ -70,7 +71,7 @@ namespace DSmartQB.API.Controllers
             var result = _service.ArchieveItems(model);
             return Ok(result);
         }
-        
+
 
         [HttpPost, Route("api/Publish")]
         public IHttpActionResult Publish([FromBody]Publish model)
@@ -107,7 +108,7 @@ namespace DSmartQB.API.Controllers
             var result = _service.DeleteExam(id);
             return Ok(result);
         }
-        
+
 
         [Authorize(Roles = "Administrator,Teacher")]
         [HttpDelete, Route("api/DeleteItemArchieve/{id}")]
@@ -129,7 +130,7 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost,Route("api/UniversitySetting")]
+        [HttpPost, Route("api/UniversitySetting")]
         public IHttpActionResult UniversitySetting()
         {
             var httpRequest = HttpContext.Current.Request;
@@ -149,7 +150,18 @@ namespace DSmartQB.API.Controllers
                         var postedFileBase = httpRequest.Files[file];
                         if (postedFileBase != null)
                         {
-                            string fileLocation = HttpContext.Current.Server.MapPath("~/Uploads/") + postedFileBase.FileName;
+                            string fileLocation = HttpContext.Current.Server.MapPath("~/Logo/") + postedFileBase.FileName;
+
+                            if (File.Exists(fileLocation))
+                            {
+                                File.Delete(fileLocation);
+                            }
+                            postedFileBase.SaveAs(fileLocation);
+
+                            string url = "Logo/" + postedFileBase.FileName;
+
+                            var result = _service.AddUniversitySettings(UniversityName, url);
+                            return Ok(result);
                         }
                     }
                 }
