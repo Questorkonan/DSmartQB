@@ -15,42 +15,40 @@ namespace DSmartQB.API.Controllers
     public class AccountController : ApiController
     {
 
-        AccountService _account = new AccountService();
-
         [HttpPost, Route("api/CreateUser")]
         public IHttpActionResult CreateUser([FromBody]UserDto user)
         {
-            user.RoleId = _account.GetRoleId("Teacher");
-            var result = _account.AddUser(user);
+            user.RoleId = new AccountService().GetRoleId("Teacher");
+            var result = new AccountService().AddUser(user);
             return Ok(result);
         }
 
         [HttpPost, Route("api/CreateStudent")]
         public IHttpActionResult CreateStudent([FromBody]UserDto user)
         {
-            user.RoleId = _account.GetRoleId("Student");
-            var result = _account.AddUser(user);
+            user.RoleId = new AccountService().GetRoleId("Student");
+            var result = new AccountService().AddUser(user);
             return Ok(result);
         }
 
         [HttpPost, Route("api/UpdateUser")]
         public IHttpActionResult UpdateUser([FromBody]UserDto user)
         {
-            var result = _account.Update(user);
+            var result = new AccountService().Update(user);
             return Ok(result);
         }
 
         [HttpPost, Route("api/ChangePassword")]
         public IHttpActionResult ChangePassword([FromBody]UserDto user)
         {
-            var result = _account.ChangePassword(user);
+            var result = new AccountService().ChangePassword(user);
             return Ok(result);
         }
 
         [HttpGet, Route("api/ListTeachers")]
         public IHttpActionResult ListTeachers()
         {
-            var result = _account.ListTeachers();
+            var result = new AccountService().ListTeachers();
             return Ok(result);
         }
 
@@ -58,21 +56,21 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ListUsers/{id}")]// id mean page
         public IHttpActionResult ListUsers([FromUri]int id)
         {
-            var result = _account.ListUsers(id);
+            var result = new AccountService().ListUsers(id);
             return Ok(result);
         }
 
         [HttpGet, Route("api/ListStudents/{id}")]// id mean page
         public IHttpActionResult ListStudents([FromUri]int id)
         {
-            var result = _account.ListStudents(id);
+            var result = new AccountService().ListStudents(id);
             return Ok(result);
         }
 
         [HttpGet, Route("api/StudentsForGroup")]
         public IHttpActionResult StudentsForGroup()
         {
-            var result = _account.StudentsForGroup();
+            var result = new AccountService().StudentsForGroup();
             return Ok(result);
         }
 
@@ -174,9 +172,9 @@ namespace DSmartQB.API.Controllers
                                         Password = password,
                                         Phone = phone,
                                         Username = username,
-                                        RoleId = _account.GetRoleId("Teacher")
+                                        RoleId = new AccountService().GetRoleId("Teacher")
                                     };
-                                    result = _account.AddUser(model);
+                                    result = new AccountService().AddUser(model);
 
                                 }
                                 return Ok(result);
@@ -296,9 +294,9 @@ namespace DSmartQB.API.Controllers
                                         Password = password,
                                         Phone = phone,
                                         Username = username,
-                                        RoleId = _account.GetRoleId("Student")
+                                        RoleId = new AccountService().GetRoleId("Student")
                                     };
-                                    result = _account.AddUser(model);
+                                    result = new AccountService().AddUser(model);
 
                                 }
                                 return Ok(result);
@@ -323,7 +321,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/GetUserById/{id}")]
         public IHttpActionResult GetUserById([FromUri]string id)
         {
-            var result = _account.GetById(id);
+            var result = new AccountService().GetById(id);
             return Ok(result);
         }
 
@@ -334,7 +332,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = _account.Delete(id);
+            var result = new AccountService().Delete(id);
             return Ok(result);
         }
 

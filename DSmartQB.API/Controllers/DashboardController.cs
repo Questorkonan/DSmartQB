@@ -1,12 +1,5 @@
-﻿using DSmartQB.CORE.DTOs;
-using DSmartQB.CORE.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using DSmartQB.CORE.Services;
 using System.Web.Http;
-using System.Web;
-using System.IO;
-using System.Text;
 using System.Web.Http.Cors;
 
 namespace DSmartQB.API.Controllers
@@ -17,19 +10,18 @@ namespace DSmartQB.API.Controllers
     public class DashboardController : ApiController
     {
 
-        DashboardService _service = new DashboardService();
 
         [HttpGet, Route("api/Cards")]
         public IHttpActionResult Cards()
         {
-            var result = _service.Cards();
+            var result = new DashboardService().Cards();
             return Ok(result);
         }
 
         [HttpGet, Route("api/Admins")]
         public IHttpActionResult Admins()
         {
-            var result = _service.Admins();
+            var result = new DashboardService().Admins();
             return Ok(result);
         }
 
@@ -37,7 +29,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ItemsPercentage")]
         public IHttpActionResult ItemsPercentage()
         {
-            var result = _service.ItemsPercentage();
+            var result = new DashboardService().ItemsPercentage();
             return Ok(result);
         }
 
@@ -45,7 +37,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ExamsPercentage")]
         public IHttpActionResult ExamsPercentage()
         {
-            var result = _service.ExamsPercentage();
+            var result = new DashboardService().ExamsPercentage();
             return Ok(result);
         }
 

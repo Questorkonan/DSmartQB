@@ -9,14 +9,13 @@ namespace DSmartQB.API.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class SubjectController : ApiController
     {
-        SubjectService _service = new SubjectService();
 
 
         [Authorize(Roles = "Administrator")]
         [HttpGet, Route("api/ListSubjects/{id}")]
         public IHttpActionResult ListSubjects([FromUri]int id)
         {
-            var result = _service.ListSubjects(id);
+            var result = new SubjectService().ListSubjects(id);
             return Ok(result);
         }
 
@@ -24,7 +23,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/LoadCourses")]
         public IHttpActionResult LoadCourses()
         {
-            var result = _service.LoadCourses();
+            var result = new SubjectService().LoadCourses();
             return Ok(result);
         }
 
@@ -32,7 +31,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/BasicInformations/{id}")]
         public IHttpActionResult BasicInformations([FromUri]string id)
         {
-            var result = _service.BasicInformations(id);
+            var result = new SubjectService().BasicInformations(id);
             return Ok(result);
         }
 
@@ -44,7 +43,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.AddCourse(model);
+            var result = new SubjectService().AddCourse(model);
             return Ok(result);
         }
 
@@ -56,7 +55,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.EditCourse(model);
+            var result = new SubjectService().EditCourse(model);
             return Ok(result);
         }
 
@@ -68,7 +67,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.AddCongitiveLevel(name);
+            var result = new SubjectService().AddCongitiveLevel(name);
             return Ok(result);
         }
 
@@ -76,7 +75,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ListCongitives")]
         public IHttpActionResult ListCongitives()
         {
-            var result = _service.ListCongitives();
+            var result = new SubjectService().ListCongitives();
             return Ok(result);
         }
 
@@ -88,7 +87,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = _service.Update(model);
+            var result = new SubjectService().Update(model);
             return Ok(result);
         }
 
@@ -100,7 +99,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.AddPlanner(model);
+            var result = new SubjectService().AddPlanner(model);
             return Ok(result);
         }
 
@@ -112,7 +111,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.UpdatePlanner(model);
+            var result = new SubjectService().UpdatePlanner(model);
             return Ok(result);
         }
 
@@ -124,7 +123,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.UpdateIlo(model);
+            var result = new SubjectService().UpdateIlo(model);
             return Ok(result);
         }
 
@@ -136,7 +135,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeletePlanner(id);
+            var result = new SubjectService().DeletePlanner(id);
             return Ok(result);
         }
 
@@ -145,7 +144,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ListPlanners/{id}")]
         public IHttpActionResult ListPlanners(string id)
         {
-            var result = _service.ListPlanner(id);
+            var result = new SubjectService().ListPlanner(id);
             return Ok(result);
         }
 
@@ -153,7 +152,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/AllIlos")]
         public IHttpActionResult AllIlos()
         {
-            var result = _service.AllIlos();
+            var result = new SubjectService().AllIlos();
             return Ok(result);
         }
 
@@ -162,7 +161,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/ListIlos/{id}")]
         public IHttpActionResult ListIlos(string id)
         {
-            var result = _service.ListIlos(id);
+            var result = new SubjectService().ListIlos(id);
             return Ok(result);
         }
 
@@ -170,7 +169,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/LoadIlos/{id}")]
         public IHttpActionResult LoadIlos(string id)
         {
-            var result = _service.LoadIlos(id);
+            var result = new SubjectService().LoadIlos(id);
             return Ok(result);
         }
 
@@ -182,7 +181,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.AddILO(model);
+            var result = new SubjectService().AddILO(model);
             return Ok(result);
         }
 
@@ -194,7 +193,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeleteCongitive(id);
+            var result = new SubjectService().DeleteCongitive(id);
             return Ok(result);
         }
 
@@ -206,7 +205,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeleteSubject(id);
+            var result = new SubjectService().DeleteSubject(id);
             return Ok(result);
         }
 
@@ -218,7 +217,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeleteIlo(id);
+            var result = new SubjectService().DeleteIlo(id);
             return Ok(result);
         }
 

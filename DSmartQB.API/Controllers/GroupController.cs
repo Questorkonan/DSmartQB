@@ -14,19 +14,18 @@ namespace DSmartQB.API.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class GroupController : ApiController
     {
-        GroupService _group = new GroupService();
 
         [HttpGet, Route("api/ListGroups/{id}")]
         public IHttpActionResult ListGroups([FromUri]int id)
         {
-            var result = _group.ListGroups(id);
+            var result = new GroupService().ListGroups(id);
             return Ok(result);
         }
 
         [HttpGet, Route("api/LoadGroups")]
         public IHttpActionResult LoadGroups()
         {
-            var result = _group.LoadGroups();
+            var result = new GroupService().LoadGroups();
             return Ok(result);
         }
 
@@ -37,7 +36,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _group.AddGroup(model);
+            var result = new GroupService().AddGroup(model);
             return Ok(result);
         }
 
@@ -119,7 +118,7 @@ namespace DSmartQB.API.Controllers
                                 {
                                     var name = ds.Tables[0].Rows[i][0].ToString();
                                     GroupAddDto model = new GroupAddDto { CreatedBy = CreatedBy, Name = name };
-                                    result = _group.AddGroup(model);
+                                    result = new GroupService().AddGroup(model);
 
                                 }
                                 return Ok(result);
@@ -148,7 +147,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = _group.Update(model);
+            var result = new GroupService().Update(model);
             return Ok(result);
         }
 
@@ -159,7 +158,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = _group.Delete(id);
+            var result = new GroupService().Delete(id);
             return Ok(result);
         }
 
@@ -170,7 +169,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = _group.AssignGroup(model);
+            var result = new GroupService().AssignGroup(model);
             return Ok(result);
         }
 

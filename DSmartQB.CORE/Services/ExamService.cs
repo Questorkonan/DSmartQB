@@ -212,21 +212,10 @@ namespace DSmartQB.CORE.Services
 
             List<ArchieveItems> archieves = new List<ArchieveItems>();
 
+            string query = $"EXECUTE dbo.SP_PreviewForSelect {model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
+            archieves = _db.Database.SqlQuery<ArchieveItems>(query).ToList();
 
 
-            #region Mild
-
-            #endregion
-
-
-            #region Normal
-
-            #endregion
-
-
-            #region Strong
-
-            #endregion
 
             return message;
         }

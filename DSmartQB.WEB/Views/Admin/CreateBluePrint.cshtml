@@ -3,5 +3,45 @@
     ViewBag.Title = "CreateBluePrint";
 }
 
-<h2>CreateBluePrint</h2>
+<div class="row" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
 
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+</div>
+<script>
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+    var app = angular.module("myApp", ['ui.bootstrap']);
+    app.controller('myCtrl', function ($scope, $http , $window) {
+
+
+        var examSettings = JSON.parse(sessionStorage.examSettings);
+
+
+
+        });
+    app.filter("trust", ['$sce', function ($sce) {
+        return function (htmlCode) {
+            return $sce.trustAsHtml(htmlCode);
+        }
+    }]);
+
+</script>

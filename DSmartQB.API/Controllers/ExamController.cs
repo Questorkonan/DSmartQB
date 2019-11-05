@@ -13,13 +13,11 @@ namespace DSmartQB.API.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ExamController : ApiController
     {
-        ExamService _service = new ExamService();
-
 
         [HttpGet, Route("api/ListExams/{id}")]
         public IHttpActionResult ListExams([FromUri]int id)
         {
-            var result = _service.ListExams(id);
+            var result = new ExamService().ListExams(id);
             return Ok(result);
         }
 
@@ -29,21 +27,21 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/LoadSpecifiedExam/{id}")]
         public IHttpActionResult LoadSpecifiedExam([FromUri]string id)
         {
-            var result = _service.LoadSpecifiedExam(id);
+            var result = new ExamService().LoadSpecifiedExam(id);
             return Ok(result);
         }
 
         [HttpPost, Route("api/AddExam")]
         public IHttpActionResult AddExam([FromBody]ExamPost model)
         {
-            var result = _service.AddSetting(model);
+            var result = new ExamService().AddSetting(model);
             return Ok(result);
         }
 
         [HttpPost, Route("api/UpdateSetting")]
         public IHttpActionResult UpdateSetting([FromBody]SpecifedExam model)
         {
-            var result = _service.UpdateSetting(model);
+            var result = new ExamService().UpdateSetting(model);
             return Ok(result);
         }
 
@@ -51,14 +49,14 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/MannualItems/{id}")]
         public IHttpActionResult MannualItems(int id)
         {
-            var result = _service.MannualItems(id);
+            var result = new ExamService().MannualItems(id);
             return Ok(result);
         }
 
         [HttpPost, Route("api/MannualItems")]
         public IHttpActionResult BluePrint([FromBody]BluePrintParams model)
         {
-            var result = _service.BluePrint(model);
+            var result = new ExamService().BluePrint(model);
             return Ok(result);
         }
 
@@ -66,7 +64,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/PreviewForSelect/{id}")]
         public IHttpActionResult PreviewForSelect(string Id)
         {
-            var result = _service.PreviewForSelect(Id);
+            var result = new ExamService().PreviewForSelect(Id);
             return Ok(result);
         }
 
@@ -75,7 +73,7 @@ namespace DSmartQB.API.Controllers
         [HttpPost, Route("api/ArchieveItems")]
         public IHttpActionResult ArchieveItems([FromBody]List<ArchieveItems> model)
         {
-            var result = _service.ArchieveItems(model);
+            var result = new ExamService().ArchieveItems(model);
             return Ok(result);
         }
 
@@ -83,7 +81,7 @@ namespace DSmartQB.API.Controllers
         [HttpPost, Route("api/Publish")]
         public IHttpActionResult Publish([FromBody]Publish model)
         {
-            var result = _service.Publish(model);
+            var result = new ExamService().Publish(model);
             return Ok(result);
         }
 
@@ -92,7 +90,7 @@ namespace DSmartQB.API.Controllers
         [HttpPost, Route("api/UpdatePreview")]
         public IHttpActionResult UpdatePreview([FromBody]PreviewObj model)
         {
-            var result = _service.UpdatePreview(model);
+            var result = new ExamService().UpdatePreview(model);
             return Ok(result);
         }
 
@@ -100,7 +98,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/PreviewExam/{id}")]
         public IHttpActionResult PreviewExam(string id)
         {
-            var result = _service.Preview(id);
+            var result = new ExamService().Preview(id);
             return Ok(result);
         }
 
@@ -112,7 +110,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeleteExam(id);
+            var result = new ExamService().DeleteExam(id);
             return Ok(result);
         }
 
@@ -125,7 +123,7 @@ namespace DSmartQB.API.Controllers
             {
                 return BadRequest("Invalid Model");
             }
-            var result = _service.DeleteItemArchieve(id);
+            var result = new ExamService().DeleteItemArchieve(id);
             return Ok(result);
         }
 
@@ -133,7 +131,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/OnlineStudentsGrid/{id}")]
         public IHttpActionResult OnlineStudentsGrid(string id)
         {
-            var result = _service.OnlineStudentsGrid(id);
+            var result = new ExamService().OnlineStudentsGrid(id);
             return Ok(result);
         }
 
@@ -167,7 +165,7 @@ namespace DSmartQB.API.Controllers
 
                             string url = "Logo/" + postedFileBase.FileName;
 
-                            var result = _service.AddUniversitySettings(UniversityName, url);
+                            var result = new ExamService().AddUniversitySettings(UniversityName, url);
                             return Ok(result);
                         }
                     }

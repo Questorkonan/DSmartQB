@@ -17,13 +17,11 @@ namespace DSmartQB.API.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ItemController : ApiController
     {
-        ItemService _item = new ItemService();
-
 
         [HttpGet, Route("api/ItemTypes")]
         public IHttpActionResult ItemTypes()
         {
-            var result = _item.ItemTypes();
+            var result = new ItemService().ItemTypes();
             return Ok(result);
         }
 
@@ -47,7 +45,7 @@ namespace DSmartQB.API.Controllers
 
             }
 
-            var result = _item.AddItem(model);
+            var result = new ItemService().AddItem(model);
             return Ok(result);
         }
 
@@ -70,7 +68,7 @@ namespace DSmartQB.API.Controllers
 
             }
 
-            var result = _item.EditMWQ(model);
+            var result = new ItemService().EditMWQ(model);
             return Ok(result);
         }
 
@@ -84,7 +82,7 @@ namespace DSmartQB.API.Controllers
                 return BadRequest("Invalid Model");
             }
 
-            var result = _item.EditTF(model);
+            var result = new ItemService().EditTF(model);
             return Ok(result);
         }
 
@@ -97,7 +95,7 @@ namespace DSmartQB.API.Controllers
                 return BadRequest("Invalid Model");
             }
 
-            var result = _item.DeleteItem(id);
+            var result = new ItemService().DeleteItem(id);
             return Ok(result);
         }
 
@@ -105,7 +103,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/AssociatedItems/{id}")]
         public IHttpActionResult AssociatedItems(int id)
         {
-            var result = _item.AssociatedItems(id);
+            var result = new ItemService().AssociatedItems(id);
             return Ok(result);
         }
 
@@ -113,7 +111,7 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/UnAssociatedItems/{id}")]
         public IHttpActionResult UnAssociatedItems(int id)
         {
-            var result = _item.UnAssociatedItems(id);
+            var result = new ItemService().UnAssociatedItems(id);
             return Ok(result);
         }
 
@@ -121,14 +119,14 @@ namespace DSmartQB.API.Controllers
         [HttpGet, Route("api/LoadItem/{id}")]
         public IHttpActionResult LoadItem(string id)
         {
-            var result = _item.LoadItem(id);
+            var result = new ItemService().LoadItem(id);
             return Ok(result);
         }
 
         [HttpGet, Route("api/LoadItemTF/{id}")]
         public IHttpActionResult LoadItemTF(string id)
         {
-            var result = _item.LoadItemTF(id);
+            var result = new ItemService().LoadItemTF(id);
             return Ok(result);
         }
 
@@ -212,7 +210,7 @@ namespace DSmartQB.API.Controllers
                                         string Question = QuestionThemeCell.InnerText.Trim();
                                         string DiffLevel = difficuiltyLevelCell.InnerText.Trim();
                                         string Time = TimeCell.InnerText.Trim();
-                                        List<string> ilos = _item.StringToList(ILOSCell.InnerText.Trim(), ',');
+                                        List<string> ilos = new ItemService().StringToList(ILOSCell.InnerText.Trim(), ',');
 
 
 
@@ -250,7 +248,7 @@ namespace DSmartQB.API.Controllers
 
                                             foreach (var ilo in ilos)
                                             {
-                                                ReturnMessage check = _item.CheckILO(ilo);
+                                                ReturnMessage check = new ItemService().CheckILO(ilo);
                                                 if (check.Key == 1)
                                                 {
                                                     correctIlos.Add(check.ReturnId);
@@ -339,7 +337,7 @@ namespace DSmartQB.API.Controllers
                                                     Alternatives = answers
                                                 };
 
-                                                _item.AddItem(ido);
+                                                new ItemService().AddItem(ido);
 
                                             }
 
@@ -456,7 +454,7 @@ namespace DSmartQB.API.Controllers
                                         string Question = QuestionThemeCell.InnerText.Trim();
                                         string DiffLevel = difficuiltyLevelCell.InnerText.Trim();
                                         string Time = TimeCell.InnerText.Trim();
-                                        List<string> ilos = _item.StringToList(ILOSCell.InnerText.Trim(), ',');
+                                        List<string> ilos = new ItemService().StringToList(ILOSCell.InnerText.Trim(), ',');
 
 
 
@@ -494,7 +492,7 @@ namespace DSmartQB.API.Controllers
 
                                             foreach (var ilo in ilos)
                                             {
-                                                ReturnMessage check = _item.CheckILO(ilo);
+                                                ReturnMessage check = new ItemService().CheckILO(ilo);
                                                 if (check.Key == 1)
                                                 {
                                                     correctIlos.Add(check.ReturnId);
@@ -583,7 +581,7 @@ namespace DSmartQB.API.Controllers
                                                     Alternatives = new List<AlternativesDto>()
                                                 };
 
-                                                _item.AddItem(ido);
+                                                new ItemService().AddItem(ido);
 
                                             }
 
