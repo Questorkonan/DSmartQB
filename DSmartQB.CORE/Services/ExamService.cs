@@ -56,8 +56,7 @@ namespace DSmartQB.CORE.Services
             return message;
         }
 
-        //
-
+        
         public string ArchieveItems(List<ArchieveItems> Items)
         {
             string message = "";
@@ -209,13 +208,33 @@ namespace DSmartQB.CORE.Services
         public string BluePrint(BluePrintParams model)
         {
             string message = "";
-
-            List<ArchieveItems> archieves = new List<ArchieveItems>();
-
-            string query = $"EXECUTE dbo.SP_PreviewForSelect {model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
-            archieves = _db.Database.SqlQuery<ArchieveItems>(query).ToList();
+            ReturnMessage QuestionValidate = new ReturnMessage();
 
 
+            List<BluePrintArchieve> archieves = new List<BluePrintArchieve>();
+
+            string query = $"EXECUTE dbo.SP_BluePrint {model.Degree},{model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
+            archieves = _db.Database.SqlQuery<BluePrintArchieve>(query).ToList();
+            
+
+            #region Original Items
+
+            foreach (var item in archieves)
+            {
+
+                string getOriginalItem = $"EXECUTE dbo.SP_OriginalItem '{item.Id}','{model.ExamId}',{item.Degree}";
+                QuestionValidate = _db.Database.SqlQuery<ReturnMessage>(getOriginalItem).FirstOrDefault();
+                if (QuestionValidate.Key == 1)
+                {
+                    // Add Answers
+
+                    string applyAnswersArchieve = $"EXECUTE dbo.SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{model.ExamId}'";
+                    message = _db.Database.SqlQuery<string>(applyAnswersArchieve).FirstOrDefault();
+                }
+
+            }
+
+            #endregion
 
             return message;
         }

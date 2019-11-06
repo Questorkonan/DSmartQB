@@ -11,6 +11,7 @@
         width: 325px !important;
     }
 </style>
+<script src="~/assets/js/angular/ng-file-upload.js"></script>
 <div ng-cloak ng-app="myApp" ng-controller="myCtrl">
     <div class="page-header">
         <h1 class="page-title">
@@ -67,6 +68,8 @@
             </div>
         </div>
         <div class="col-lg-6">
+            <div class="alert alert-primary">Did you want to change University Settings? <a href='javascript:void(0)'  data-toggle="modal" data-target="#universityModal" class="alert-link">here</a></div>
+
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Adminstrator</h3>
@@ -90,38 +93,93 @@
             </div>
             
         </div>
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Items</h3>
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Items</h3>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="doughnut" class="chart chart-doughnut itemChart"
+                                        chart-data="data" chart-labels="labels"></canvas>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <canvas id="doughnut" class="chart chart-doughnut itemChart"
-                                    chart-data="data" chart-labels="labels"></canvas> 
-                        </div>
+
                     </div>
-                    
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Exams</h3>
+                            </div>
+                            <div class="card-body">
+
+                                <canvas id="pie" class="chart chart-pie itemChart"
+                                        chart-data="dataExam" chart-labels="labelsExam" chart-options="options"></canvas>
+
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Exams</h3>
-                        </div>
-                        <div class="card-body">
+            </div>
+        </div>
 
-                            <canvas id="pie" class="chart chart-pie itemChart"
-                                    chart-data="dataExam" chart-labels="labelsExam" chart-options="options"></canvas>
+
+    <div class="modal fade" id="universityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        University Settings
+                    </h5>
+
+                </div>
+                <div class="modal-body">
+                    <form name="universityFrm" novalidate>
+                        <div class="row">
+                            <div class="col-sm-6 col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">University</label>
+                                    <input type="text" autocomplete="off" class="form-control" placeholder="University" name="name" ng-model="univ.Name" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-12">
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" ngf-select ng-model="univ.Logo" name="groupTemplate" required>
+                                        <label class="custom-file-label">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
-                    </div>
-                    
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="universityFrm.$invalid" ng-click="saveLogo(univ)">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
+
 <script>
 
     var user = JSON.parse(sessionStorage.user);
@@ -133,8 +191,8 @@
         }
     }
 
-    var app = angular.module("myApp", ['chart.js']);
-    app.controller('myCtrl', function ($scope, $http) {
+    var app = angular.module("myApp", ['chart.js', 'ngFileUpload']);
+    app.controller('myCtrl', function ($scope, $http, Upload) {
 
         $scope.Cards = {};
         $scope.Items = {};
@@ -158,6 +216,32 @@
         }
 
         $scope.lista();
+
+
+
+        $scope.univ = {};
+
+        $scope.saveLogo = function (university) {
+
+
+            Upload.upload({
+                url: apiurl + 'UniversitySetting',
+                data: { file: university.Logo, UniversityName: university.Name },
+                headers: {
+                    'Content-Type': undefined,
+                    'authorization': 'bearer ' + user.access_token
+                }
+            }).then(function (res) {
+                toastr.success(res.data, 'Success');
+                $scope.univ = {};
+
+            }, function (resp) {
+                console.log('Error status: ' + resp.status);
+            });
+
+
+        }
+
 
 
         $scope.Adminlista = function () {

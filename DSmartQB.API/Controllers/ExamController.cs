@@ -53,7 +53,7 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost, Route("api/MannualItems")]
+        [HttpPost, Route("api/BluePrint")]
         public IHttpActionResult BluePrint([FromBody]BluePrintParams model)
         {
             var result = new ExamService().BluePrint(model);

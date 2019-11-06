@@ -7,12 +7,42 @@
 
     <div class="col-md-12">
         <div class="card">
-            <div class="card-body">
-                
-
-
+            <div class="card-header">
+                <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
             </div>
-
+            <div class="card-body o-auto">
+                <form name="bluePrint" novalidate>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">No Of Questions</label>
+                                <input type="number" class="form-control" placeholder="No Of Questions" name="noQ" ng-model="Exam.NoQuestions" min="1" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Mild</label>
+                                <input type="number" class="form-control" placeholder="Mild in percentage" name="mild" ng-model="Exam.Mild" min="1" max="100" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Normal</label>
+                                <input type="number" class="form-control" placeholder="Normal in percentage" min="1" name="normal" ng-model="Exam.Normal" max="100" required>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="form-group">
+                                <label class="form-label">Hard</label>
+                                <input type="number" class="form-control" placeholder="Hard in percentage" min="1" name="hard" ng-model="Exam.Hard" max="100" required>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-primary" ng-disabled="bluePrint.$invalid" ng-click="createBluePrint(Exam)">Save changes</button>
+                </div>
+            </div>
 
         </div>
     </div>
@@ -29,15 +59,52 @@
             'authorization': 'bearer ' + user.access_token
         }
     }
-    var app = angular.module("myApp", ['ui.bootstrap']);
+    var app = angular.module("myApp", []);
     app.controller('myCtrl', function ($scope, $http , $window) {
 
 
         var examSettings = JSON.parse(sessionStorage.examSettings);
 
+        $scope.createBluePrint = function (param) {
+
+
+
+            var percentageEquality = Number(param.Normal + param.Mild + param.Hard)
+
+            if (percentageEquality != 100) {
+
+                toastr.error('Total ercentage for each must equal 100%','DSmartQB')
+
+            }
+            else {
+
+            var model = {};
+            model.ExamId = examSettings.examId;
+            model.NoQuestions = param.NoQuestions;
+            model.Mild = param.Mild;
+            model.Normal = param.Normal;
+            model.Hard = param.Hard;
+
+
+            var req = {
+                    method: 'POST',
+                    url: apiurl + "BluePrint",
+                    headers: config.headers,
+                    data: model
+                }
+
+                $http(req).then(function () {
+                    sessionStorage.examId = JSON.stringify(exam_examid);
+                     $window.location.href = '@Url.Action("Preview")';
+
+                })
+            }
+
+        }
 
 
         });
+
     app.filter("trust", ['$sce', function ($sce) {
         return function (htmlCode) {
             return $sce.trustAsHtml(htmlCode);
