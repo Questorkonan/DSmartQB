@@ -373,8 +373,6 @@
 
             var marks = Number($scope.sum(checkedArr, 'Degree') + currentMark);
 
-            console.log('totalMark : ' + totalMark + ' and currentMark : ' + currentMark + ' and marks : ' + marks)
-
 
             if (marks > totalMark) {
                 toastr.error('Selected items marks [' + marks + '] is more than exam mark [' + totalMark + ']', 'DSmartQB')
@@ -580,14 +578,6 @@
             return $sce.trustAsHtml(htmlCode);
         }
     }]);
-    app.filter('range', function () {
-        return function (val, range) {
-            range = parseInt(range);
-            for (var i = 0; i < range; i++)
-                val.push(i);
-            return val;
-        };
-    });
-
+    
 </script>
 
