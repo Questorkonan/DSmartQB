@@ -78,6 +78,14 @@ namespace DSmartQB.API.Controllers
         }
 
 
+        [HttpPost, Route("api/UpdateDegreeArchieveItems")]
+        public IHttpActionResult UpdateDegreeArchieveItems([FromBody]List<ArchieveItems> model)
+        {
+            var result = new ExamService().UpdateDegreeArchieveItems(model);
+            return Ok(result);
+        }
+
+
         [HttpPost, Route("api/Publish")]
         public IHttpActionResult Publish([FromBody]Publish model)
         {
@@ -134,6 +142,17 @@ namespace DSmartQB.API.Controllers
             var result = new ExamService().OnlineStudentsGrid(id);
             return Ok(result);
         }
+
+        
+
+        [HttpGet, Route("api/UniversityLogo")]
+        public IHttpActionResult UniversityLogo()
+        {
+            var result = new ExamService().UniversityLogo();
+            return Ok(result);
+        }
+
+
 
         [HttpPost, Route("api/UniversitySetting")]
         public IHttpActionResult UniversitySetting()

@@ -56,7 +56,23 @@ namespace DSmartQB.CORE.Services
             return message;
         }
 
+
         
+        public string UpdateDegreeArchieveItems(List<ArchieveItems> Items)
+        {
+            string message = "";
+            foreach (var item in Items)
+            {
+
+                string getOriginalItem = $"EXECUTE dbo.SP_UpdateDegree '{item.Id}','{item.ExamId}',{item.Degree}";
+                message = _db.Database.SqlQuery<string>(getOriginalItem).FirstOrDefault();
+                
+            }
+            return message;
+        }
+
+
+
         public string ArchieveItems(List<ArchieveItems> Items)
         {
             string message = "";
@@ -213,7 +229,7 @@ namespace DSmartQB.CORE.Services
 
             List<BluePrintArchieve> archieves = new List<BluePrintArchieve>();
 
-            string query = $"EXECUTE dbo.SP_BluePrint {model.Degree},{model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
+            string query = $"EXECUTE dbo.SP_BluePrint {model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
             archieves = _db.Database.SqlQuery<BluePrintArchieve>(query).ToList();
             
 
@@ -251,6 +267,13 @@ namespace DSmartQB.CORE.Services
             string query = $"EXECUTE dbo.SP_DeleteItemArchieve '{id}'";
             string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
+        }
+
+        public University UniversityLogo()
+        {
+            string query = $"EXECUTE dbo.SP_GetLogo";
+            var Univeristy = _db.Database.SqlQuery<University>(query).FirstOrDefault();
+            return Univeristy;
         }
 
         public List<OnlineStudentsGrid> OnlineStudentsGrid(string Id)

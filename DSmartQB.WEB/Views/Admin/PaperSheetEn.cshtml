@@ -63,8 +63,9 @@
     <button class="btn btn-blue float-right" onclick="CreatePDFfromHTML()">
         <i class="fa fa-file-pdf-o"></i> Export as .pdf
     </button>
+    <div class="container canvas_div_pdf" ng-app="myApp" ng-controller="myCtrl" ng-cloak> 
 
-    <div class="container canvas_div_pdf" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+        <img src="@System.Configuration.ConfigurationManager.AppSettings["attchmenturl"]/{{logo.Path}}" class="img img-thumbnail" style="width: 87px;"/>
         <center>Course Answer Sheet</center>
         <br />
         <div class="row">
@@ -147,7 +148,7 @@
     <script>
 
     var user = JSON.parse(sessionStorage.user);
-    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+        var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
         var config = {
             headers: {
                 'contentType': 'application/json;charset=utf-8',
@@ -181,6 +182,31 @@
             }
 
             $scope.lista();
+
+
+            $scope.logo = {};
+
+            $scope.imageLogo = function () {
+
+
+                $scope.loading = true;
+
+                var reqList = {
+                    method: 'Get',
+                    url: apiurl + 'UniversityLogo',
+                    headers: config.headers
+                }
+
+                $http(reqList).then(function (res) {
+                    $scope.logo = res.data;
+                    console.log(res.data)
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+
+            $scope.imageLogo();
 
 
         });

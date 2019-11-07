@@ -11,43 +11,91 @@
                 <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
             </div>
             <div class="card-body o-auto">
-                <form name="bluePrint" novalidate>
-                    <div class="row">
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">No Of Questions</label>
-                                <input type="number" class="form-control" placeholder="No Of Questions" name="noQ" ng-model="Exam.NoQuestions" min="1" required>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">Mild</label>
-                                <input type="number" class="form-control" placeholder="Mild in percentage" name="mild" ng-model="Exam.Mild" min="1" max="100" required>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">Normal</label>
-                                <input type="number" class="form-control" placeholder="Normal in percentage" min="1" name="normal" ng-model="Exam.Normal" max="100" required>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-3">
-                            <div class="form-group">
-                                <label class="form-label">Hard</label>
-                                <input type="number" class="form-control" placeholder="Hard in percentage" min="1" name="hard" ng-model="Exam.Hard" max="100" required>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <div class="form-footer">
-                    <button type="button" class="btn btn-primary" ng-disabled="bluePrint.$invalid" ng-click="createBluePrint(Exam)">Save changes</button>
-                </div>
+             <div ng-if="!displayManageMarksBtn">
+                 <form name="bluePrint" novalidate>
+                     <div class="row">
+                         <div class="col-sm-6 col-md-3">
+                             <div class="form-group">
+                                 <label class="form-label">No Of Questions</label>
+                                 <input type="number" class="form-control" placeholder="No Of Questions" name="noQ" ng-model="Exam.NoQuestions" min="1" required>
+                             </div>
+                         </div>
+                         <div class="col-sm-6 col-md-3">
+                             <div class="form-group">
+                                 <label class="form-label">Mild</label>
+                                 <input type="number" class="form-control" placeholder="Mild in percentage" name="mild" ng-model="Exam.Mild" min="1" max="100" required>
+                             </div>
+                         </div>
+                         <div class="col-sm-6 col-md-3">
+                             <div class="form-group">
+                                 <label class="form-label">Normal</label>
+                                 <input type="number" class="form-control" placeholder="Normal in percentage" min="1" name="normal" ng-model="Exam.Normal" max="100" required>
+                             </div>
+                         </div>
+                         <div class="col-sm-6 col-md-3">
+                             <div class="form-group">
+                                 <label class="form-label">Hard</label>
+                                 <input type="number" class="form-control" placeholder="Hard in percentage" min="1" name="hard" ng-model="Exam.Hard" max="100" required>
+                             </div>
+                         </div>
+                     </div>
+                 </form>
+                 <div class="form-footer">
+                     <button type="button" class="btn btn-primary" ng-disabled="bluePrint.$invalid" ng-click="createBluePrint(Exam)">Save changes</button>
+
+                 </div>
+             </div>
+               
+                <button type="button" class="btn btn-success" ng-if="displayManageMarksBtn" ng-click="manageMarks()">Manage Marks</button>
+
             </div>
 
         </div>
     </div>
 
-
+    <div class="modal fade bd-example-modal-lg" id="additemModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manage Marks</h5>
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="table-responsive" style="overflow-y: scroll;height: 400px;">
+                        @*style="overflow-y: scroll;height: 400px;"*@
+                        <table class="table card-table table-striped table-vcenter">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Type</th>
+                                    <th>Mark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in Items.ExamBody">
+                                 
+                                    <td>
+                                        <p class="question-text text-capitalize text-dark" ng-bind-html="item.Question.Stem | trust">
+                                    </td>
+                                    <td>
+                                        <span ng-class="{'badge badge-primary' : item.Question.Type == 'MCQ' , 'badge badge-success' : item.Question.Type == 'TF' , 'badge badge-info' : item.Question.Type == 'MRQ'}">{{item.Question.Type}}</span>
+                                    </td>
+                                    <td ng-init="item.Question.Degree = 1">
+                                        <input type="number" class="form-control" style="width:63px" min="1" ng-model="item.Question.Degree" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="assign()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 <script>
@@ -59,15 +107,96 @@
             'authorization': 'bearer ' + user.access_token
         }
     }
-    var app = angular.module("myApp", []);
+    var app = angular.module("myApp", ['ui.bootstrap', 'checklist-model']);
     app.controller('myCtrl', function ($scope, $http , $window) {
-
-
+        $scope.checked = [];
+        $scope.Items = [];
+        $scope.loading = false;
         var examSettings = JSON.parse(sessionStorage.examSettings);
+        $scope.displayManageMarksBtn = false;
+
+
+        $scope.lista = function () {
+
+            $scope.loading = true;
+
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'PreviewExam/' + examSettings.examId,
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.loading = false;
+                $scope.Items = res.data;
+                console.log(res.data)
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.sum = function (items, prop) {
+            return items.reduce(function (a, b) {
+                return a + b[prop];
+            }, 0);
+        };
+
+
+        $scope.assign = function () {
+
+            var itms = [];
+
+            angular.forEach($scope.Items.ExamBody, function (value, key) {
+                itms.push(value.Question);
+            });
+
+            var exam_marks = examSettings.mark;
+
+
+            var marks = $scope.sum(itms, 'Degree');
+
+            if (marks > exam_marks) {
+                toastr.error('Selected items marks [' + marks + '] is more than exam mark [' + exam_marks + ']', 'DSmartQB')
+            }
+            else if (marks < exam_marks) {
+                toastr.error('Selected items marks [' + marks + '] is less than exam mark [' + exam_marks + ']', 'DSmartQB')
+            }
+            else {
+
+                for (var i in itms) {
+                    itms[i].ExamId = examSettings.examId;
+                }
+
+
+                var req = {
+                    method: 'POST',
+                    url: apiurl + "UpdateDegreeArchieveItems",
+                    headers: config.headers,
+                    data: itms
+                }
+
+                $http(req).then(function (res) {
+
+                    sessionStorage.examId = JSON.stringify(examSettings.examId);
+                     $window.location.href = '@Url.Action("Preview")';
+
+
+                })
+            }
+
+
+        }
+
+
+        $scope.manageMarks = function () {
+
+            $('#additemModal').modal('show');
+            $scope.lista();
+
+        }
+
 
         $scope.createBluePrint = function (param) {
-
-
 
             var percentageEquality = Number(param.Normal + param.Mild + param.Hard)
 
@@ -93,9 +222,12 @@
                     data: model
                 }
 
-                $http(req).then(function () {
-                    sessionStorage.examId = JSON.stringify(exam_examid);
-                     $window.location.href = '@Url.Action("Preview")';
+            $http(req).then(function () {
+
+                $scope.displayManageMarksBtn = true;
+
+                    @*sessionStorage.examId = JSON.stringify(exam_examid);
+                    $window.location.href = '@Url.Action("Preview")';*@
 
                 })
             }

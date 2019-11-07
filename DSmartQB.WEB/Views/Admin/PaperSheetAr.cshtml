@@ -64,6 +64,7 @@
     </button>
 
     <div class="container canvas_div_pdf" ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+        <img src="@System.Configuration.ConfigurationManager.AppSettings["attchmenturl"]/{{logo.Path}}" class="img img-thumbnail" style="width: 87px;" />
         <center>ورقة اجابة مقرر دراسى</center>
         <br />
         <div class="row">
@@ -180,6 +181,30 @@
             }
 
             $scope.lista();
+
+            $scope.logo = {};
+
+            $scope.imageLogo = function(){
+
+
+                $scope.loading = true;
+
+                var reqList = {
+                    method: 'Get',
+                    url: apiurl + 'UniversityLogo',
+                    headers: config.headers
+                }
+
+                $http(reqList).then(function (res) {
+                    $scope.logo = res.data;
+                    console.log(res.data)
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+
+            $scope.imageLogo();
 
 
         });
