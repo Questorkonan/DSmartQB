@@ -1221,6 +1221,7 @@
     <Content Include="assets\scss\_stacked.scss" />
     <Content Include="assets\scss\_variables.scss" />
     <Content Include="Views\Admin\OnlineStudents.cshtml" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

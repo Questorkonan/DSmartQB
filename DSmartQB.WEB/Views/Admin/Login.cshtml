@@ -34,7 +34,6 @@
     window.onhashchange = function (event) {
         window.location.hash = "no-back";
     };
-
 </script>
 
 
@@ -88,15 +87,14 @@
 
 
                     var model = JSON.stringify(access)
-
-                    console.log(model)
-
+                    
                     $http.post('@Url.Action("Access")', model).then(function (d) {
                         $scope.loading = false;
 
                      $window.location.href = '@Url.Action("Dashboard")';
                     },
                         function error(err) {
+                            toastr.error(err)
                             console.log(err);
 
                         });
