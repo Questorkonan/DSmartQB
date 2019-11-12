@@ -463,10 +463,12 @@
         $scope.deletePlanner = function (pln) {
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': pln.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeletePlanner/" + pln.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeletePlanner",
                     headers: config.headers
                 }
 
@@ -483,10 +485,12 @@
         $scope.deleteIlo = function (ilo) {
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': ilo.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteIlo/" + ilo.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeleteIlo",
                     headers: config.headers
                 }
 

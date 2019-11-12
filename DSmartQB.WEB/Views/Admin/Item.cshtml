@@ -280,10 +280,12 @@
 
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': itm.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteItem/" + itm.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeleteItem",
                     headers: config.headers
                 }
 
@@ -303,10 +305,12 @@
 
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': itm.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteItem/" + itm.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeleteItem",
                     headers: config.headers
                 }
 

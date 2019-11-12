@@ -221,10 +221,12 @@
         $scope.deleteCongitive = function (item) {
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': item.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteCongitive/" + item.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeleteCongitive",
                     headers: config.headers
                 }
 

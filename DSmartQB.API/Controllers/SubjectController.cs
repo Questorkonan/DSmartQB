@@ -128,14 +128,14 @@ namespace DSmartQB.API.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpDelete, Route("api/DeletePlanner/{id}")]
-        public IHttpActionResult DeletePlanner([FromUri]string id)
+        [HttpPost, Route("api/DeletePlanner")]
+        public IHttpActionResult DeletePlanner([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new SubjectService().DeletePlanner(id);
+            var result = new SubjectService().DeletePlanner(remove.Id);
             return Ok(result);
         }
 
@@ -186,38 +186,38 @@ namespace DSmartQB.API.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpDelete, Route("api/DeleteCongitive/{id}")]
-        public IHttpActionResult DeleteCongitive(string id)
+        [HttpPost, Route("api/DeleteCongitive")]
+        public IHttpActionResult DeleteCongitive([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new SubjectService().DeleteCongitive(id);
+            var result = new SubjectService().DeleteCongitive(remove.Id);
             return Ok(result);
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpDelete, Route("api/DeleteSubject/{id}")]
-        public IHttpActionResult DeleteSubject(string id)
+        [HttpDelete, Route("api/DeleteSubject")]
+        public IHttpActionResult DeleteSubject([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new SubjectService().DeleteSubject(id);
+            var result = new SubjectService().DeleteSubject(remove.Id);
             return Ok(result);
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpDelete, Route("api/DeleteIlo/{id}")]
-        public IHttpActionResult DeleteIlo(string id)
+        [HttpPost, Route("api/DeleteIlo")]
+        public IHttpActionResult DeleteIlo([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new SubjectService().DeleteIlo(id);
+            var result = new SubjectService().DeleteIlo(remove.Id);
             return Ok(result);
         }
 

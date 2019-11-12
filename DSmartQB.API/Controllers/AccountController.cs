@@ -325,14 +325,14 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete, Route("api/DeleteUser/{id}")]
-        public IHttpActionResult DeleteUser([FromUri]string id)
+        [HttpPost, Route("api/DeleteUser")]
+        public IHttpActionResult DeleteUser([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = new AccountService().Delete(id);
+            var result = new AccountService().Delete(remove.Id);
             return Ok(result);
         }
 

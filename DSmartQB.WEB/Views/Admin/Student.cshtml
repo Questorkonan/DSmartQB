@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Student";
 }
-
 <script src="~/assets/js/angular/ng-file-upload.js"></script>
 <div ng-app="myApp" ng-controller="myCtrl">
     <div class="page-header">
@@ -22,7 +21,6 @@
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
                         </div>
-
                     </div>
                     <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
                 </div>
@@ -67,7 +65,7 @@
                                         <a href="javascript:void(0)" data-toggle="dropdown" class="icon"><i class="fe fe-more-vertical"></i></a>
                                         <div class="dropdown-menu dropdown-menu-right">
                                             <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(tchr)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
-                                            <a href="javascript:void(0)" class="dropdown-item"  data-toggle="modal" data-target="#changePassModal" ng-click="changePass(tchr)"><i class="dropdown-icon fe fe-refresh-ccw"></i> Change Password </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#changePassModal" ng-click="changePass(tchr)"><i class="dropdown-icon fe fe-refresh-ccw"></i> Change Password </a>
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteUser(tchr)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
                                         </div>
                                     </div>
@@ -75,18 +73,13 @@
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
                 <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
-
             </div>
-
         </div>
     </div>
 
-
     @*Create Student*@
-
     <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -94,11 +87,8 @@
                     <h5 class="modal-title">Create Student</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="mannual" novalidate>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">First Name</label>
@@ -118,7 +108,6 @@
                                         <input type="text" class="form-control" readonly="readonly" uib-datepicker-popup="{{dateFormat}}" ng-model="Student.datebirth" name="availabledate" is-open="availableDatePopup.opened" datepicker-options="availableDateOptions" ng-required="true" close-text="Close" ng-click="OpenAvailableDate()"
                                                placeholder="Available Date" required />
                                     </div>
-
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-4">
@@ -136,7 +125,6 @@
                                     <input type="text" class="form-control" ui-mask="999999999999999" ng-model="Student.nationalid" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
@@ -149,7 +137,6 @@
                                     <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="Student.phone" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
@@ -163,11 +150,8 @@
                                 </div>
                             </div>
 
-
                         </div>
-
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -177,9 +161,7 @@
         </div>
     </div>
 
-
     @*Upload Student*@
-
     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -187,25 +169,21 @@
                     <h5 class="modal-title">Upload Student</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="attachForm" novalidate>
                         <div class="form-group">
                             <label></label>
                             <a href='@Url.Content("~/Template/Student.xlsx")'>
-
                                 <b><span class="fe fe-download"></span> Download</b>
                             </a>
                         </div>
                         <div class="form-group">
                             <label></label>
-
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" ngf-select ng-model="StudentFile" name="groupTemplate" required>
                                 <label class="custom-file-label">Choose file</label>
                             </div>
                         </div>
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -215,10 +193,7 @@
         </div>
     </div>
 
-
-
     @*Update Student*@
-
     <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -226,11 +201,8 @@
                     <h5 class="modal-title">Update <span class="text-indigo">[{{Student.firstname +' '+ Student.lastname}}]</span></h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="mannual" novalidate>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">First Name</label>
@@ -258,7 +230,6 @@
                                     <input type="text" class="form-control" ui-mask="999999999999999" ng-model="Student.nationalid" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
@@ -271,16 +242,13 @@
                                     <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="Student.phone" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" class="form-control" placeholder="Username" ng-model="Student.username" required>
                                 </div>
                             </div>
-
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -291,9 +259,7 @@
         </div>
     </div>
 
-
     @*Change Password*@
-
     <div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -301,7 +267,6 @@
                     <h5 class="modal-title">Change Password</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="changePassFrm" novalidate>
                         <div class="form-group">
                             <label>Password</label>
@@ -314,7 +279,6 @@
                         </div>
                         <input type="hidden" name="Id" ng-model="Student.Id">
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -324,9 +288,7 @@
         </div>
     </div>
 
-
 </div>
-
 <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function () {
@@ -496,10 +458,12 @@
         $scope.deleteUser = function (item) {
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': item.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteUser/" + item.Id,
+                    method: 'POST',
+                    url: apiurl + "DeleteUser",
+                    data: remove,
                     headers: config.headers
                 }
 

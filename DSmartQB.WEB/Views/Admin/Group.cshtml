@@ -352,10 +352,12 @@
         $scope.deleteGroup = function (item) {
             if (confirm('Are you sure .. ?')) {
 
+                var remove = { 'Id': item.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteGroup/" + item.Id,
+                    method: 'POST',
+                    url: apiurl + "DeleteGroup",
+                    data: remove,
                     headers: config.headers
                 }
 

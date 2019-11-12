@@ -497,9 +497,12 @@
             if (confirm('Are you sure .. ?')) {
 
 
+                var remove = { 'Id': item.Id }
+
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteUser/" + item.Id,
+                    method: 'POST',
+                    url: apiurl + "DeleteUser",
+                    data: remove,
                     headers: config.headers
                 }
 

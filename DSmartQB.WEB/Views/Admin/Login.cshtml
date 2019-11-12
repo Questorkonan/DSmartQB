@@ -27,14 +27,14 @@
     <script src="../assets/js/toastr.js"></script>
     <script src="../assets/js/require.min.js"></script>
     <script src="../assets/js/angular/angular.min.js"></script>
-   
 
-<script>
-    history.pushState({ page: 1 }, "Title 1", "#no-back");
-    window.onhashchange = function (event) {
-        window.location.hash = "no-back";
-    };
-</script>
+
+    <script>
+        history.pushState({ page: 1 }, "Title 1", "#no-back");
+        window.onhashchange = function (event) {
+            window.location.hash = "no-back";
+        };
+    </script>
 
 
 
@@ -42,7 +42,7 @@
         requirejs.config({
             baseUrl: '/'
         });
-        
+
 
         var app = angular.module("myApp", []);
         app.controller('myCtrl', function ($scope, $http, $window) {
@@ -87,17 +87,17 @@
 
 
                     var model = JSON.stringify(access)
-                    
+
                     $http.post('@Url.Action("Access")', model).then(function (d) {
                         $scope.loading = false;
 
-                     $window.location.href = '@Url.Action("Dashboard")';
+                        $window.location.href = '@Url.Action("Dashboard")';
                     },
                         function error(err) {
                             toastr.error(err)
                             console.log(err);
 
-                        });
+                   });
 
 
 
@@ -137,11 +137,11 @@
                 <div class="row">
                     <div class="col col-login mx-auto">
                         @*<div class="text-center mb-6">
-                            <img src="~/assets/images/dsmart.jpg"  class="login-logo" alt=""/>
-                        </div>*@
+                                <img src="~/assets/images/dsmart.jpg"  class="login-logo" alt=""/>
+                            </div>*@
                         <form class="card" name="loginFrm" novalidate>
                             <div class="text-center mb-6">
-                                <img src="~/assets/images/Dsmart.png" class="login-logo" alt="" style="margin-top: 8px;"/>
+                                <img src="~/assets/images/Dsmart.png" class="login-logo" alt="" style="margin-top: 8px;" />
                             </div>
 
                             <div class="card-body p-6">
@@ -156,7 +156,7 @@
                                     </label>
                                     <input type="password" class="form-control" placeholder="Password" name="password" ng-model="frm.password" required>
                                 </div>
-                             
+
                                 <div class="form-footer">
                                     <button type="submit" class="btn btn-primary btn-block" ng-disabled="loginFrm.$invalid" ng-click="login(frm)">Sign in</button>
                                 </div>
@@ -165,7 +165,7 @@
 
                                     </label>
 
-                                    <div class="lds-hourglass" style="margin-left: 133px;margin-top: 9px;"  ng-if="loading"></div>
+                                    <div class="lds-hourglass" style="margin-left: 133px;margin-top: 9px;" ng-if="loading"></div>
                                 </div>
                             </div>
                         </form>

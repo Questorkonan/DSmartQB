@@ -111,27 +111,27 @@ namespace DSmartQB.API.Controllers
         }
 
         [Authorize(Roles = "Administrator,Teacher")]
-        [HttpDelete, Route("api/DeleteExam/{id}")]
-        public IHttpActionResult DeleteExam(string id)
+        [HttpPost, Route("api/DeleteExam")]
+        public IHttpActionResult DeleteExam([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new ExamService().DeleteExam(id);
+            var result = new ExamService().DeleteExam(remove.Id);
             return Ok(result);
         }
 
 
         [Authorize(Roles = "Administrator,Teacher")]
-        [HttpDelete, Route("api/DeleteItemArchieve/{id}")]
-        public IHttpActionResult DeleteItemArchieve(string id)
+        [HttpPost, Route("api/DeleteItemArchieve")]
+        public IHttpActionResult DeleteItemArchieve([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
-            var result = new ExamService().DeleteItemArchieve(id);
+            var result = new ExamService().DeleteItemArchieve(remove.Id);
             return Ok(result);
         }
 

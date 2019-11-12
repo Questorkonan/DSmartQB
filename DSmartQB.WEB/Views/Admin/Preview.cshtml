@@ -514,11 +514,13 @@
         $scope.delete = function (item) {
             if (confirm('Are you sure .. ?')) {
 
-                console.log(item)
+
+                var remove = { 'Id': item.Id }
 
                 var req = {
-                    method: 'Delete',
-                    url: apiurl + "DeleteItemArchieve/" + item.Id,
+                    method: 'POST',
+                    data: remove,
+                    url: apiurl + "DeleteItemArchieve",
                     headers: config.headers
                 }
 

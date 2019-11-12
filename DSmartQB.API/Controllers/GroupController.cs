@@ -151,14 +151,14 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete, Route("api/DeleteGroup/{id}")]
-        public IHttpActionResult DeleteGroup([FromUri]string id)
+        [HttpPost, Route("api/DeleteGroup")]
+        public IHttpActionResult DeleteGroup([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Fill Empty Records");
             }
-            var result = new GroupService().Delete(id);
+            var result = new GroupService().Delete(remove.Id);
             return Ok(result);
         }
 

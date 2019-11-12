@@ -87,15 +87,15 @@ namespace DSmartQB.API.Controllers
         }
 
 
-        [HttpDelete, Route("api/DeleteItem/{id}")]
-        public IHttpActionResult DeleteItem([FromUri]string id)
+        [HttpPost, Route("api/DeleteItem")]
+        public IHttpActionResult DeleteItem([FromBody]Remove remove)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid Model");
             }
 
-            var result = new ItemService().DeleteItem(id);
+            var result = new ItemService().DeleteItem(remove.Id);
             return Ok(result);
         }
 
