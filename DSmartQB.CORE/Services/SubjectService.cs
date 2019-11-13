@@ -85,11 +85,11 @@ namespace DSmartQB.CORE.Services
         }
 
         
-        public List<ILOBinder> AllIlos()
+        public List<ILOBinder> AllIlos(string id)
         {
             #region ILO
 
-            string query1 = $"EXECUTE dbo.SP_GetAllIlos";
+            string query1 = $"EXECUTE dbo.SP_GetAllIlos '{id}'";
             var pagination = _db.Database.SqlQuery<ILOBinder>(query1).ToList();
 
             #endregion

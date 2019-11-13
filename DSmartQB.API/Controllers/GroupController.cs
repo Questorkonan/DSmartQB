@@ -1,5 +1,6 @@
 ﻿using DSmartQB.CORE.DTOs;
 using System;
+using System.Linq;
 using System.Web.Http;
 using System.Data;
 using System.Data.OleDb;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Web;
 using DSmartQB.CORE.Services;
 using System.Web.Http.Cors;
+using System.Collections.Generic;
 
 namespace DSmartQB.API.Controllers
 {
@@ -90,6 +92,7 @@ namespace DSmartQB.API.Controllers
                                 {
                                     excelConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + fileLocation + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
                                 }
+                                
                                 OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
                                 excelConnection.Open();
                                 var dt = excelConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
@@ -98,6 +101,9 @@ namespace DSmartQB.API.Controllers
                                     return null;
                                 }
                                 var excelSheets = new string[dt.Rows.Count];
+
+                                
+
                                 int t = 0;
                                 foreach (DataRow row in dt.Rows)
                                 {
@@ -114,12 +120,15 @@ namespace DSmartQB.API.Controllers
                                     dataAdapter.Fill(ds);
                                 }
                                 int count = Convert.ToInt32(ds.Tables[0].Rows.Count);
+                                
                                 for (int i = 0; i < count; i++)
                                 {
                                     var name = ds.Tables[0].Rows[i][0].ToString();
+                                    
                                     GroupAddDto model = new GroupAddDto { CreatedBy = CreatedBy, Name = name };
+                                    
                                     result = new GroupService().AddGroup(model);
-
+                                    
                                 }
                                 return Ok(result);
                             }
@@ -159,6 +168,18 @@ namespace DSmartQB.API.Controllers
                 return BadRequest("Fill Empty Records");
             }
             var result = new GroupService().Delete(remove.Id);
+            return Ok(result);
+        }
+
+
+        [HttpPost, Route("api/DeleteListGroup")]
+        public IHttpActionResult DeleteListGroup([FromBody]List<string> remove)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Fill Empty Records");
+            }
+            var result = new GroupService().DeleteAll(remove);
             return Ok(result);
         }
 

@@ -40,16 +40,24 @@ namespace DSmartQB.CORE.Services
 
         public ReturnMessage AddUser(UserDto model)
         {
-            string query = $"EXECUTE dbo.CB_AddUser '{model.Firstname}','{model.Lastname}','{model.Datebirth}','{model.Gender}','{model.NationalId}','{model.Email}','{model.Password}','{model.Phone}','{model.Username}','{model.RoleId}'";
+            string query = $"EXECUTE dbo.CB_AddUser '{model.Firstname}','{model.Lastname}','{model.Email}','{model.Password}','{model.Phone}','{model.Username}','{model.RoleId}'";
             var result = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
             return result;
         }
 
         public ReturnMessage Update(UserDto model)
         {
-            string query = $"EXECUTE dbo.CB_UpdateUser '{model.Id}','{model.Firstname}','{model.Lastname}','{model.Gender}','{model.Email}','{model.Username}','{model.Phone}','{model.NationalId}'";
+            string query = $"EXECUTE dbo.CB_UpdateUser '{model.Id}','{model.Firstname}','{model.Lastname}','{model.Email}','{model.Username}','{model.Phone}'";
             var result = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
             return result;
+        }
+
+        public string UserProfile(UserProfile user)
+        {
+            string message = "";
+            string query = $"EXECUTE dbo.SP_UserProfile '{user.Id}','{user.Username}','{user.Password}'";
+            message = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            return message;
         }
 
         public ReturnMessage ChangePassword(UserDto model)
@@ -63,6 +71,17 @@ namespace DSmartQB.CORE.Services
         {
             string query = $"EXECUTE dbo.SP_DeleteUser '{id}'";
             var user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            return user;
+        }
+
+        public string DeleteAll(List<string> remove)
+        {
+            string user = "";
+            foreach (var id in remove)
+            {
+                string query = $"EXECUTE dbo.SP_DeleteUser '{id}'";
+                user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            }
             return user;
         }
 
@@ -120,15 +139,12 @@ namespace DSmartQB.CORE.Services
             return pagination;
         }
 
-        public UserPagination StudentsForGroup()
+        public List<string> StudentsForGroup(string id)
         {
-            var pagination = new UserPagination();
+            string rowsQuery = $"EXECUTE dbo.SP_ListStudentsForGroup '{id}'";
+            var students = _db.Database.SqlQuery<string>(rowsQuery).ToList();
 
-
-            string rowsQuery = $"EXECUTE dbo.SP_ListStudentsForGroup";
-            pagination.Users = _db.Database.SqlQuery<UserBinder>(rowsQuery).ToList();
-
-            return pagination;
+            return students;
         }
 
 

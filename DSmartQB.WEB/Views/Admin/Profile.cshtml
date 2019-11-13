@@ -1,0 +1,110 @@
+﻿
+@{
+    ViewBag.Title = "Profile";
+}
+
+<div ng-app="myApp" ng-controller="myCtrl" ng-cloak>
+    <div class="page-header">
+        <h1 class="page-title">
+            User Profile
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
+                </div>
+                <div class="card-body o-auto">
+
+
+                    <form name="mannual" novalidate>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fe fe-user"></i>
+                                </span>
+                                <input type="text" class="form-control" name="Username" placeholder="Username" ng-model="user.username" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    <i class="fe fe-star"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" placeholder="password" ng-model="user.password" required>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" ng-disabled="mannual.$invalid" ng-click="saveCreate(user)">Save changes</button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+    var user = JSON.parse(sessionStorage.user);
+    var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+    var config = {
+        headers: {
+            'contentType': 'application/json;charset=utf-8',
+            'authorization': 'bearer ' + user.access_token
+        }
+    }
+
+    var app = angular.module("myApp", []);
+    app.controller('myCtrl', function ($scope, $http) {
+
+        $scope.loading = false;
+
+        var oldUser = JSON.parse(sessionStorage.user);
+
+
+        $scope.user = {
+            'username': oldUser.username,
+            'password': null
+        };
+
+        $scope.saveCreate = function (user) {
+
+            var model = {
+                ID: oldUser.id ,
+                username: user.username,
+                password: user.password
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl +"UserProfile",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+
+                 sessionStorage.user = {};
+            location.href = '@Url.Action("Login","Admin")';
+
+            }, function (err) {
+                console.log(err)
+            });
+
+
+
+        }
+
+
+
+    });
+
+
+</script>

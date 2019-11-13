@@ -20,7 +20,13 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
+                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#assignModal"><i class="dropdown-icon fe fe-link"></i> Assign To Group</a>
                         </div>
+                        <button type="button" class="btn btn-danger" ng-disabled="!checked.length" ng-click="deleteSelected(checked)">
+                            <i class="fe fe-trash"></i>
+                        </button>
+
+
                     </div>
                     <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
                 </div>
@@ -28,10 +34,9 @@
                     <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
                         <thead>
                             <tr>
-                                <th class="text-center w-1"><i class="icon-people"></i></th>
-                                <th>User</th>
-                                <th class="text-center">Gender</th>
-                                <th class="text-center">National Id</th>
+                                <th></th>
+                                <th class="text-center w-1">Avatar</th>
+                                <th class="text-center">User</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Username</th>
                                 <th class="text-center"><i class="icon-settings"></i></th>
@@ -39,6 +44,9 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="tchr in Students">
+                                <td>
+                                    <input type="checkbox" checklist-model="checked" name="Id" checklist-value="tchr.Id">
+                                </td>
                                 <td class="text-center">
                                     <div class="avatar d-block">
                                         {{tchr.Prefix}}
@@ -46,13 +54,6 @@
                                 </td>
                                 <td>
                                     <div>{{tchr.Fullname}}</div>
-                                    <div class="small text-muted">
-                                        Date Birth :  {{tchr.Datebirth}}
-                                    </div>
-                                </td>
-                                <th class="text-center">{{tchr.Gender}}</th>
-                                <td class="text-center">
-                                    {{tchr.NationalId}}
                                 </td>
                                 <td class="text-center">
                                     <a href="mailto:{{tchr.Email}}">{{tchr.Email}}</a>
@@ -99,30 +100,6 @@
                                 <div class="form-group">
                                     <label class="form-label">Last Name</label>
                                     <input type="text" class="form-control" placeholder="Last Name" ng-model="Student.lastname" required>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="form-label">Datebirth</label>
-                                    <div class="input-form">
-                                        <input type="text" class="form-control" readonly="readonly" uib-datepicker-popup="{{dateFormat}}" ng-model="Student.datebirth" name="availabledate" is-open="availableDatePopup.opened" datepicker-options="availableDateOptions" ng-required="true" close-text="Close" ng-click="OpenAvailableDate()"
-                                               placeholder="Available Date" required />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gender</label>
-                                    <select class="form-control" name="gender" ng-model="Student.gender">
-                                        <option value="M">Male</option>
-                                        <option value="F">Female</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label">National Id</label>
-                                    <input type="text" class="form-control" ui-mask="999999999999999" ng-model="Student.nationalid" required>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-6">
@@ -215,21 +192,6 @@
                                     <input type="text" class="form-control" placeholder="Last Name" ng-model="Student.lastname" required>
                                 </div>
                             </div>
-                            <div class="col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="form-label">Gender</label>
-                                    <select class="form-control" name="gender" ng-model="Student.gender">
-                                        <option value="M">Male</option>
-                                        <option value="F">Female</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-8">
-                                <div class="form-group">
-                                    <label class="form-label">National Id</label>
-                                    <input type="text" class="form-control" ui-mask="999999999999999" ng-model="Student.nationalid" required>
-                                </div>
-                            </div>
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
@@ -288,6 +250,42 @@
         </div>
     </div>
 
+    @*Assign To group*@
+
+    <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Assign Students to Group</h5>
+                </div>
+                <div class="modal-body">
+
+                    <form name="Associate" novalidate>
+                        <div class="form-group">
+                            <label>Group</label>
+                            <div class="input-icon">
+@*<select class="form-control" name="group" ng-model="grp">
+    <option ng-repeat="grp in Groups" value="{{grp.Id}}">{{grp.Name}}</option>
+</select>*@
+                                <select class="form-control" ng-model="grp"
+                                        data-ng-options="t as t.Name for t in Groups" required>
+                                    <option value="">Select Group</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-disabled="!checked.length" ng-click="assign(checked,grp)">
+                       Save Data
+                    </button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 <script>
     // Add the following code if you want the name of the file appear on select
@@ -307,20 +305,18 @@
         }
     }
 
-    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload','ui.mask']);
+    var app = angular.module("myApp", ['ui.bootstrap', 'ngFileUpload', 'ui.mask', 'checklist-model']);
     app.controller('myCtrl', function ($scope, $http, Upload, $timeout) {
         $scope.Student = {
             'firstname': null,
             'lastname': null,
-            'datebirth': new Date(),
-            'gender': 'M',
-            'nationalid': null,
             'email' : null,
             'phone': null,
             'username': null,
             'password': null
 
         };
+        $scope.checked = [];
         $scope.itemsPerPage = 5;
         $scope.currentPage = 1;
         $scope.TotalRows = 0;
@@ -337,6 +333,52 @@
         $scope.availableDatePopup = {
             opened: false
         };
+
+        $scope.Groups = [];
+        $scope.listgroups = function () {
+            
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'LoadGroups',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.Groups = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+        $scope.listgroups();
+
+
+        $scope.assign = function (checks, group) {
+
+
+            var model = {
+                GroupId: group.Id,
+                UserId: checks
+            }
+
+            console.log(model)
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AssignUserGroup",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success(res.data, "DSmartQB.")
+                $scope.checked = [];
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
+
 
 
         $scope.OpenAvailableDate = function () {
@@ -370,6 +412,33 @@
                 'id': item.Id
             }
         }
+
+        $scope.deleteSelected = function (users) {
+
+            if (confirm('Are you sure .. ?')) {
+
+                var remove = users;
+
+                var req = {
+                    method: 'POST',
+                    url: apiurl + "DeleteListUsers",
+                    data: remove,
+                    headers: config.headers
+                }
+
+                $http(req).then(function (res) {
+                    toastr.success(res.data, "DSmartQB.")
+                    $scope.lista(1);
+                }, function (err) {
+                    console.log(err)
+                });
+
+            }
+
+
+        }
+
+
 
         $scope.editPass = function (user) {
             console.log(user)
@@ -408,9 +477,6 @@
                 $scope.Student = {
                     'firstname': data.Firstname,
                     'lastname': data.Lastname,
-                    'datebirth': data.Datebirth,
-                    'gender': data.Gender,
-                    'nationalid': data.NationalId,
                     'email': data.Email,
                     'phone': data.Phone,
                     'username': data.Username,
@@ -430,8 +496,6 @@
             var model = {
                 Firstname: item.firstname,
                 Lastname: item.lastname,
-                Gender: item.gender,
-                NationalId: item.nationalid,
                 Email: item.email,
                 Phone: item.phone,
                 Username: item.username,
@@ -500,9 +564,6 @@
                 $scope.Student = {
                     'firstname': null,
                     'lastname': null,
-                    'datebirth': new Date(),
-                    'gender': 'M',
-                    'nationalid': null,
                     'email': null,
                     'phone': null,
                     'username': null,

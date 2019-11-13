@@ -149,10 +149,10 @@ namespace DSmartQB.API.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        [HttpGet, Route("api/AllIlos")]
-        public IHttpActionResult AllIlos()
+        [HttpGet, Route("api/AllIlos/{id}")]
+        public IHttpActionResult AllIlos([FromUri] string id)
         {
-            var result = new SubjectService().AllIlos();
+            var result = new SubjectService().AllIlos(id);
             return Ok(result);
         }
 

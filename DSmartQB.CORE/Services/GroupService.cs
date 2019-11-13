@@ -59,6 +59,17 @@ namespace DSmartQB.CORE.Services
             return user;
         }
 
+        public string DeleteAll(List<string> remove)
+        {
+            string user = "";
+            foreach (var item in remove)
+            {
+                string query = $"EXECUTE dbo.SP_DeleteGroup '{item}'";
+                 user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
+            }
+            return user;
+        }
+
         public string AssignGroup(GroupUser model)
         {
             string user = "";

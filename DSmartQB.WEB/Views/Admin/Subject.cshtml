@@ -54,8 +54,8 @@
                             Add Subject
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#ilosCodeModal"><i class="dropdown-icon fe fe-code"></i> ILOs Code</a>
-                            <a class="dropdown-item" href='@Url.Action("CongitiveLevel")'><i class="dropdown-icon fe fe-link"></i> Congitive Level</a>
+                            @*<a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#ilosCodeModal"><i class="dropdown-icon fe fe-code"></i> ILOs Code</a>*@
+                            <a class="dropdown-item" href='@Url.Action("CongitiveLevel")'><i class="dropdown-icon fe fe-link"></i> Cognitive Level</a>
                             <a class="dropdown-item" href='@Url.Action("CreateSubject")'><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
                         </div>
 
@@ -79,6 +79,7 @@
                                         <div class="dropdown-menu dropdown-menu-right">
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="loadUpdate(sub)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteSubject(sub)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
+                                            <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#ilosCodeModal"  ng-click="getIloForSubject(sub)"><i class="dropdown-icon fe fe-code"></i> ILOs Code</a>
                                         </div>
                                     </div>
                                 </div>
@@ -181,26 +182,27 @@
 
         $scope.ilos = [];
 
+        $scope.getIloForSubject = function (subject) {
 
-        $scope.ilosLista = function () {
 
             $scope.loading = true;
 
             var reqList = {
                 method: 'Get',
-                url: apiurl + 'AllIlos',
+                url: apiurl + 'AllIlos/' + subject.Id,
                 headers: config.headers
             }
 
             $http(reqList).then(function (res) {
                 $scope.ilos = res.data;
                 console.log(res.data)
+                $scope.loading = false;
             }, function (err) {
                 console.log(err)
             });
-        }
 
-        $scope.ilosLista();
+
+        }
 
         $scope.lista = function (curr) {
 

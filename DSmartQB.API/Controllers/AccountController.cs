@@ -7,6 +7,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Web;
 using System.Web.Http.Cors;
+using System.Collections.Generic;
 
 namespace DSmartQB.API.Controllers
 {
@@ -45,12 +46,24 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+        
+
+        [HttpPost, Route("api/UserProfile")]
+        public IHttpActionResult UserProfile([FromBody]UserProfile user)
+        {
+            var result = new AccountService().UserProfile(user);
+            return Ok(result);
+        }
+
+
+
         [HttpGet, Route("api/ListTeachers")]
         public IHttpActionResult ListTeachers()
         {
             var result = new AccountService().ListTeachers();
             return Ok(result);
         }
+
 
 
         [HttpGet, Route("api/ListUsers/{id}")]// id mean page
@@ -67,10 +80,10 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet, Route("api/StudentsForGroup")]
-        public IHttpActionResult StudentsForGroup()
+        [HttpGet, Route("api/StudentsForGroup/{id}")]
+        public IHttpActionResult StudentsForGroup([FromUri] string id)
         {
-            var result = new AccountService().StudentsForGroup();
+            var result = new AccountService().StudentsForGroup(id);
             return Ok(result);
         }
 
@@ -152,22 +165,16 @@ namespace DSmartQB.API.Controllers
                                 {
                                     var firstname = ds.Tables[0].Rows[i][0].ToString();
                                     var lastname = ds.Tables[0].Rows[i][1].ToString();
-                                    var datebirth = Convert.ToDateTime(ds.Tables[0].Rows[i][2]);
-                                    var gender = Convert.ToChar(ds.Tables[0].Rows[i][3]);
-                                    var nationalid = ds.Tables[0].Rows[i][4].ToString();
-                                    var email = ds.Tables[0].Rows[i][5].ToString();
-                                    var password = ds.Tables[0].Rows[i][6].ToString();
-                                    var phone = ds.Tables[0].Rows[i][7].ToString();
-                                    var username = ds.Tables[0].Rows[i][8].ToString();
+                                    var email = ds.Tables[0].Rows[i][2].ToString();
+                                    var password = ds.Tables[0].Rows[i][3].ToString();
+                                    var phone = ds.Tables[0].Rows[i][4].ToString();
+                                    var username = ds.Tables[0].Rows[i][5].ToString();
 
 
                                     UserDto model = new UserDto
                                     {
                                         Firstname = firstname,
                                         Lastname = lastname,
-                                        Datebirth = datebirth.ToString(),
-                                        Gender = gender.ToString(),
-                                        NationalId = nationalid,
                                         Email = email,
                                         Password = password,
                                         Phone = phone,
@@ -274,22 +281,16 @@ namespace DSmartQB.API.Controllers
                                 {
                                     var firstname = ds.Tables[0].Rows[i][0].ToString();
                                     var lastname = ds.Tables[0].Rows[i][1].ToString();
-                                    var datebirth = Convert.ToDateTime(ds.Tables[0].Rows[i][2]);
-                                    var gender = Convert.ToChar(ds.Tables[0].Rows[i][3]);
-                                    var nationalid = ds.Tables[0].Rows[i][4].ToString();
-                                    var email = ds.Tables[0].Rows[i][5].ToString();
-                                    var password = ds.Tables[0].Rows[i][6].ToString();
-                                    var phone = ds.Tables[0].Rows[i][7].ToString();
-                                    var username = ds.Tables[0].Rows[i][8].ToString();
+                                    var email = ds.Tables[0].Rows[i][2].ToString();
+                                    var password = ds.Tables[0].Rows[i][3].ToString();
+                                    var phone = ds.Tables[0].Rows[i][4].ToString();
+                                    var username = ds.Tables[0].Rows[i][5].ToString();
 
 
                                     UserDto model = new UserDto
                                     {
                                         Firstname = firstname,
                                         Lastname = lastname,
-                                        Datebirth = datebirth.ToString(),
-                                        Gender = gender.ToString(),
-                                        NationalId = nationalid,
                                         Email = email,
                                         Password = password,
                                         Phone = phone,
@@ -333,6 +334,19 @@ namespace DSmartQB.API.Controllers
                 return BadRequest("Fill Empty Records");
             }
             var result = new AccountService().Delete(remove.Id);
+            return Ok(result);
+        }
+
+
+
+        [HttpPost, Route("api/DeleteListUsers")]
+        public IHttpActionResult DeleteListUsers([FromBody]List<string> remove)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Fill Empty Records");
+            }
+            var result = new AccountService().DeleteAll(remove);
             return Ok(result);
         }
 

@@ -16,6 +16,8 @@ namespace DSmartQB.WEB.Controllers
             return View();
         }
 
+
+
         [AllowAnonymous]
         [HttpPost]
         public ActionResult Access(LoginVM model)
@@ -34,6 +36,12 @@ namespace DSmartQB.WEB.Controllers
 
         [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Dashboard()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator,Teacher")]
+        public ActionResult Profile()
         {
             return View();
         }

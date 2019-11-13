@@ -36,9 +36,6 @@ namespace DSmartQB.CORE.DTOs
     {
         public string Id { get; set; }
         public string Fullname { get; set; }
-        public string Datebirth { get; set; }
-        public string Gender { get; set; }
-        public string NationalId { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Username { get; set; }
@@ -53,4 +50,10 @@ namespace DSmartQB.CORE.DTOs
     }
 
 
+    public class UserProfile
+    {
+        public string Id { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
 }
