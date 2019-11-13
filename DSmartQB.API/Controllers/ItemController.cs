@@ -25,7 +25,32 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+        [AllowAnonymous]
+        [HttpPost, Route("api/BrowserUploadUrl")]
+        public IHttpActionResult BrowserUploadUrl()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count > 0)
+            {
+                foreach (string file in httpRequest.Files)
+                {
+                    var postedFileBase = httpRequest.Files[file];
+                    if (postedFileBase != null)
+                    {
+                        string fileLocation = HttpContext.Current.Server.MapPath("~/Uploads/") + postedFileBase.FileName;
 
+                        if (File.Exists(fileLocation))
+                        {
+                            File.Delete(fileLocation);
+                        }
+                        postedFileBase.SaveAs(fileLocation);
+                        
+                    }
+                }
+            }
+
+                return Ok();
+        }
 
         [HttpPost, Route("api/AddItem")]
         public IHttpActionResult AddItem([FromBody]ItemAddDto model)
