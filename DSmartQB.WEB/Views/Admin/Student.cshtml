@@ -373,6 +373,7 @@
             $http(req).then(function (res) {
                 toastr.success(res.data, "DSmartQB.")
                 $scope.checked = [];
+                $('#assignModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -457,6 +458,7 @@
             $http(req).then(function (res) {
                 toastr.success(res.data.Value, "DSmartQB.")
                 $scope.lista(1);
+                $('#changePassModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -513,6 +515,7 @@
             $http(req).then(function (res) {
                 toastr.success(res.data.Value, "DSmartQB.")
                 $scope.lista(1);
+                $('#updateModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -571,6 +574,7 @@
 
                 };
                 $scope.lista(1);
+                $('#mannualModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -597,6 +601,7 @@
                 }
 
                 $scope.lista(1);
+                $('#uploadModal').modal('hide');
             }, function (resp) {
                 console.log(resp);
                 });

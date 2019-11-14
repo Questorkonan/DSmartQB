@@ -85,11 +85,6 @@
                                 </span>
                                 <input type="text" class="form-control" name="group" placeholder="group" ng-model="grp.Name" required>
                             </div>
-                            @*<label style="margin-top: 6px;">
-                                    <span class="text-danger" ng-show="(mannual.group.$touched || mannual.group.$dirty) && mannual.group.$invalid">
-                                        <span ng-show="mannual.group.$error.required">Name is required</span>
-                                    </span>
-                                </label>*@
                         </div>
                     </form>
 
@@ -156,8 +151,7 @@
                         <div class="form-group">
                             <label>Name</label>
                             <div class="input-icon">
-                                <span class="input-icon-addon">
-                                    <i class="fa fa-modx"></i>
+                                <span class="input-icon-addon"><i class="fe fe-airplay"></i>
                                 </span>
                                 <input type="text" class="form-control" name="group" placeholder="group" ng-model="grp.Name" required>
                             </div>
@@ -274,32 +268,6 @@
         }
 
 
-        $scope.assign = function (checks, group) {
-
-
-            var model = {
-                GroupId : group.Id,
-                UserId : checks
-            }
-
-            console.log(model)
-
-            var req = {
-                method: 'POST',
-                url: apiurl + "AssignUserGroup",
-                headers: config.headers,
-                data: model
-            }
-
-            $http(req).then(function (res) {
-                toastr.success(res.data, "DSmartQB.")
-                $scope.checked = [];
-            }, function (err) {
-                console.log(err)
-            });
-
-        }
-
 
         $scope.lista = function (curr) {
 
@@ -365,6 +333,7 @@
             $http(req).then(function (res) {
                 toastr.success(res.data, "DSmartQB.")
                 $scope.lista(1);
+                $('#updateModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -421,6 +390,7 @@
                 }
                 $scope.grp = {};
                 $scope.lista(1);
+                $('#mannualModal').modal('hide');
             }, function (err) {
                 console.log(err)
             });
@@ -447,6 +417,7 @@
                 }
 
                 $scope.lista(1);
+                $('#uploadModal').modal('hide');
             }, function (err) {
                 console.log(err);
                 });
