@@ -40,7 +40,7 @@ namespace DSmartQB.CORE.Services
 
         public ReturnMessage AddUser(UserDto model)
         {
-            string query = $"EXECUTE dbo.CB_AddUser '{model.Firstname}','{model.Lastname}','{model.Email}','{model.Password}','{model.Phone}','{model.Username}','{model.RoleId}'";
+            string query = $"EXECUTE dbo.CB_AddUser N'{model.Firstname}',N'{model.Lastname}','{model.Email}','{model.Password}','{model.Phone}','{model.Username}','{model.RoleId}'";
             var result = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
             return result;
         }

@@ -188,12 +188,12 @@ namespace DSmartQB.CORE.Services
 
             if (model.Question.Ilo != "")
             {
-                iquery = $"EXECUTE dbo.SP_CreateCLassifiedItem '{model.Question.Item}','{model.Question.Type.Id}','{model.Question.Duration}','{model.Question.UserId}','{model.Question.level}','{model.Question.Ilo}'";
+                iquery = $"EXECUTE dbo.SP_CreateCLassifiedItem N'{model.Question.Item}','{model.Question.Type.Id}','{model.Question.Duration}','{model.Question.UserId}','{model.Question.level}','{model.Question.Ilo}'";
 
             }
             else
             {
-                iquery = $"EXECUTE dbo.SP_CreateUnCLassifiedItem '{model.Question.Item}','{model.Question.Type.Id}','{model.Question.Duration}','{model.Question.UserId}','{model.Question.level}'";
+                iquery = $"EXECUTE dbo.SP_CreateUnCLassifiedItem N'{model.Question.Item}','{model.Question.Type.Id}','{model.Question.Duration}','{model.Question.UserId}','{model.Question.level}'";
 
             }
             var item = _db.Database.SqlQuery<string>(iquery).FirstOrDefault();
@@ -203,14 +203,14 @@ namespace DSmartQB.CORE.Services
 
             if (model.Alternatives.Count == 0)
             {
-                string aquery = $"EXECUTE dbo.SP_CreateTFAlternative '{item}','{model.Question.TFStatus}'";
+                string aquery = $"EXECUTE dbo.SP_CreateTFAlternative N'{item}','{model.Question.TFStatus}'";
                 ans = _db.Database.SqlQuery<ReturnMessage>(aquery).FirstOrDefault();
             }
             else
             {
                 foreach (var val in model.Alternatives)
                 {
-                    string aquery = $"EXECUTE dbo.SP_CreateAnswerAlternative '{item}','{val.Text}','{val.Correct}'";
+                    string aquery = $"EXECUTE dbo.SP_CreateAnswerAlternative N'{item}','{val.Text}','{val.Correct}'";
                     ans = _db.Database.SqlQuery<ReturnMessage>(aquery).FirstOrDefault();
                 }
             }
