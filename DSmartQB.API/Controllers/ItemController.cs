@@ -171,13 +171,18 @@ namespace DSmartQB.API.Controllers
                                     MainDocumentPart mainPart = doc.MainDocumentPart;
                                     IEnumerable<Table> tables = mainPart.Document.Descendants<Table>();
 
+                                    var fonts = mainPart.FontTablePart;
+                                    var styles = mainPart.StyleDefinitionsPart;
+                                    var effects = mainPart.StylesWithEffectsPart;
+
+
                                     var index = 0;
                                     string message = "";
                                     StringBuilder errorBuilder = new StringBuilder();
                                     errorBuilder.AppendLine("<div class='alert alert-danger'  role='alert'>");
 
                                     bool flag = false;
-
+                                    
                                     foreach (var table in tables)
                                     {
                                         index++;
@@ -204,13 +209,10 @@ namespace DSmartQB.API.Controllers
                                         TableCell ShuffleTCell = ShuffleT.Descendants<TableCell>().ElementAt(1);
                                         bool shuffle = ShuffleTCell.InnerText.Trim().Equals("True", StringComparison.OrdinalIgnoreCase) ? true : false;
 
-
                                         string Question = QuestionThemeCell.InnerText.Trim();
                                         string DiffLevel = difficuiltyLevelCell.InnerText.Trim();
                                         string Time = TimeCell.InnerText.Trim();
                                         List<string> ilos = new ItemService().StringToList(ILOSCell.InnerText.Trim(), ',');
-
-
 
 
                                         if (string.IsNullOrEmpty(Question))
