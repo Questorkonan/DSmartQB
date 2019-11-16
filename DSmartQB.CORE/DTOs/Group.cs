@@ -16,7 +16,7 @@ namespace DSmartQB.CORE.DTOs
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool Deleted { get; set; }
+        public int NoOFStudents { get; set; }
         public string CreatedBy { get; set; }
     }
 

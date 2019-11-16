@@ -40,6 +40,7 @@
                                         <a href="javascript:void(0)" class="text-inherit">{{grp.Name}}</a>
                                     </div>
                                     <small class="d-block item-except text-sm text-muted h-1x">{{grp.CreatedBy}}</small>
+                                    <small class="d-block item-except text-sm text-muted h-1x">No Students <span ng-class="{'badge badge-primary' : grp.NoOFStudents > 0 , 'badge badge-danger' : grp.NoOFStudents == 0}">{{grp.NoOFStudents}}</span></small>
                                 </div>
                                 <div class="col-auto">
                                     <div class="item-action dropdown">
