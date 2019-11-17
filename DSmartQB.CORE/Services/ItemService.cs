@@ -51,12 +51,12 @@ namespace DSmartQB.CORE.Services
 
             if (model.Item.ILoId == null)
             {
-                itemQuery = $"EXECUTE dbo.SP_EditMWQUnAssociate '{model.Item.Id}', '{model.Item.Stem}', {model.Item.Duration}, '{model.Item.Level}'";
+                itemQuery = $"EXECUTE dbo.SP_EditMWQUnAssociate '{model.Item.Id}', N'{model.Item.Stem}', {model.Item.Duration}, '{model.Item.Level}'";
                 _db.Database.SqlQuery<string>(itemQuery).FirstOrDefault();
             }
             else
             {
-                itemQuery = $"EXECUTE dbo.SP_EditMWQAssociate '{model.Item.Id}', '{model.Item.Stem}', {model.Item.Duration}, '{model.Item.ILoId}', '{model.Item.Level}'";
+                itemQuery = $"EXECUTE dbo.SP_EditMWQAssociate '{model.Item.Id}', N'{model.Item.Stem}', {model.Item.Duration}, '{model.Item.ILoId}', '{model.Item.Level}'";
                 _db.Database.SqlQuery<string>(itemQuery).FirstOrDefault();
             }
 

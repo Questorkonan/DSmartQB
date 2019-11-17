@@ -133,15 +133,15 @@
                                 <div class="form-label">Level <small> (mild , normal and strong)</small></div>
                                 <div class="custom-controls-stacked">
                                     <label class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Mild" checked="">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios" ng-model="question.level" value="Mild" checked="">
                                         <span class="custom-control-label">Mild</span>
                                     </label>
                                     <label class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Normal">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios" ng-model="question.level" value="Normal">
                                         <span class="custom-control-label">Normal</span>
                                     </label>
                                     <label class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input" name="example-inline-radios"  ng-model="question.level" value="Strong">
+                                        <input type="radio" class="custom-control-input" name="example-inline-radios" ng-model="question.level" value="Strong">
                                         <span class="custom-control-label">Strong</span>
                                     </label>
                                 </div>
@@ -204,7 +204,7 @@
     }
 
     var app = angular.module("myApp", ['ng.ckeditor']);
-    app.controller('myCtrl', function ($scope, $http) {
+    app.controller('myCtrl', function ($scope, $http, $timeout) {
 
         $scope.dispacher = '';
         $scope.loading = false;
@@ -225,7 +225,7 @@
             { name: 'about', groups: ['about'] }
 
         ];
-        
+
         $scope.config.syntaxhighlight_lang = 'csharp';
         $scope.config.syntaxhighlight_hideControls = true;
         $scope.config.languages = 'vi';
@@ -453,10 +453,12 @@
                 }
 
                 $http(req).then(function (res) {
-                    toastr.success(res.data, "DSmartQB.")
+
+                    toastr.success('Created Sucesfully', "DSmartQB.")
+                    
                     location.href = '@Url.Action("Item")';
 
-                    $scope.loadCourses();
+                    //$scope.loadCourses();
 
                 }, function (err) {
                     console.log(err.data.Message)
@@ -464,9 +466,9 @@
                 });
             }
         }
- 
-           
-          
+
+
+
     });
 
 

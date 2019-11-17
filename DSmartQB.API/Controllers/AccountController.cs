@@ -167,8 +167,8 @@ namespace DSmartQB.API.Controllers
                                     var lastname = ds.Tables[0].Rows[i][1].ToString();
                                     var email = ds.Tables[0].Rows[i][2].ToString();
                                     var password = ds.Tables[0].Rows[i][3].ToString();
-                                    var phone = ds.Tables[0].Rows[i][4].ToString();
-                                    var username = ds.Tables[0].Rows[i][5].ToString();
+                                    var phone = ds.Tables[0].Rows[i][5].ToString();
+                                    var username = ds.Tables[0].Rows[i][4].ToString();
 
 
                                     UserDto model = new UserDto

@@ -47,7 +47,7 @@ namespace DSmartQB.CORE.Services
 
         public ReturnMessage Update(UserDto model)
         {
-            string query = $"EXECUTE dbo.CB_UpdateUser '{model.Id}','{model.Firstname}','{model.Lastname}','{model.Email}','{model.Username}','{model.Phone}'";
+            string query = $"EXECUTE dbo.CB_UpdateUser '{model.Id}',N'{model.Firstname}',N'{model.Lastname}','{model.Email}','{model.Username}','{model.Phone}'";
             var result = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
             return result;
         }

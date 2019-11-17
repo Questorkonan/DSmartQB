@@ -65,7 +65,7 @@
     </button>
     <div class="container canvas_div_pdf" ng-app="myApp" ng-controller="myCtrl" ng-cloak> 
 
-        <img src="@System.Configuration.ConfigurationManager.AppSettings["attchmenturl"]/{{logo.Path}}" class="img img-thumbnail" style="width: 87px;"/>
+        <img ng-src="{{logo.Path}}" class="img img-thumbnail" style="width: 87px;"/>
         <center>Course Answer Sheet</center>
         <br />
         <div class="row">
@@ -149,6 +149,7 @@
 
     var user = JSON.parse(sessionStorage.user);
         var apiurl = '@System.Configuration.ConfigurationManager.AppSettings["apiurl"]';
+        var attachurl = '@System.Configuration.ConfigurationManager.AppSettings["attchmenturl"]';
         var config = {
             headers: {
                 'contentType': 'application/json;charset=utf-8',
@@ -161,7 +162,7 @@
 
             var ExamId = JSON.parse(sessionStorage.examId);
             $scope.Items = [];
-
+        
             $scope.lista = function () {
 
                 $scope.loading = true;
@@ -177,6 +178,7 @@
                     $scope.Items = res.data;
                     console.log(res.data)
                 }, function (err) {
+                    console.log('error for exam')
                     console.log(err)
                 });
             }
@@ -200,7 +202,9 @@
                 $http(reqList).then(function (res) {
                     $scope.logo = res.data;
                     console.log(res.data)
+                    $scope.logo.Path = attachurl+res.data.Path
                 }, function (err) {
+                    console.log('error for logo')
                     console.log(err)
                 });
 
