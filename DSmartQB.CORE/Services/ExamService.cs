@@ -1,5 +1,6 @@
 ﻿using DSmartQB.CORE.DTOs;
 using DSmartQB.CORE.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -50,7 +51,9 @@ namespace DSmartQB.CORE.Services
         {
             ReturnMessage message = new ReturnMessage();
 
-            string query = $"EXECUTE dbo.SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{model.StartDate}'";
+            DateTime StartDate = Convert.ToDateTime(model.StartDate);
+
+            string query = $"EXECUTE dbo.SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{StartDate}'";
             message = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
 
             return message;
