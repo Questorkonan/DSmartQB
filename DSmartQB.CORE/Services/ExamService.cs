@@ -42,7 +42,10 @@ namespace DSmartQB.CORE.Services
 
         public string UpdateSetting(SpecifedExam model)
         {
-            string query = $"EXECUTE dbo.SP_UpdateSetting '{model.Id}','{model.Name}','{model.GroupId}','{model.Duration}','{model.Mark}','{model.StartDate}'";
+            DateTime StartDate = Convert.ToDateTime(model.StartDate);
+            string formattedDate = StartDate.ToString("yyyy-MM-dd HH:mm:ss");
+
+            string query = $"EXECUTE dbo.SP_UpdateSetting '{model.Id}','{model.Name}','{model.GroupId}','{model.Duration}','{model.Mark}','{formattedDate}'";
             string message = _db.Database.SqlQuery<string>(query).FirstOrDefault();
 
             return message;
@@ -52,8 +55,9 @@ namespace DSmartQB.CORE.Services
             ReturnMessage message = new ReturnMessage();
 
             DateTime StartDate = Convert.ToDateTime(model.StartDate);
+            string formattedDate = StartDate.ToString("yyyy-MM-dd HH:mm:ss");
 
-            string query = $"EXECUTE dbo.SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{StartDate}'";
+            string query = $"EXECUTE dbo.SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{formattedDate}'";
             message = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
 
             return message;
