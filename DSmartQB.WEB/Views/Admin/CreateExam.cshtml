@@ -31,7 +31,7 @@
                             <div class="col-sm-6 col-md-3">
                                 <div class="form-group">
                                     <label class="form-label">Duration (in Mins)</label>
-                                    <input type="number" class="form-control" placeholder="Duration" name="duration" ng-model="Exam.duration" min="60" required>
+                                    <input type="number" class="form-control" placeholder="Duration" name="duration" ng-model="Exam.duration" min="10" required>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-4">
@@ -183,7 +183,7 @@
 
         $scope.Exam = {
             'name': null,
-            'duration': 60,
+            'duration': 10,
             'startDate': new Date(),
             'type': 'Mannual',
             'marks': 10,
