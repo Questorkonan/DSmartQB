@@ -27,6 +27,10 @@ namespace DSmartQB.WEB.Controllers
             var user = _account.CheckUser(model.Username, model.Password);
             if (user != null)
             {
+                // get views
+
+                Session["Views"] = _account.GetViewsForUser(user.Id);
+
                 FormsAuthentication.SetAuthCookie(model.Username, false);
 
             }
@@ -46,43 +50,43 @@ namespace DSmartQB.WEB.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Group()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Teacher()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Student()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult Subject()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult CongitiveLevel()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult CreateSubject()
         {
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public ActionResult EditSubject()
         {
             return View();

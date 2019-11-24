@@ -15,14 +15,14 @@ namespace DSmartQB.CORE.Services
 
             #region Groups
 
-            string query1 = $"EXECUTE dbo.SP_ListGroups {page}";
+            string query1 = $"EXECUTE SP_ListGroups {page}";
             pagination.Groups = _db.Database.SqlQuery<GroupListDto>(query1).ToList();
 
             #endregion
 
             #region TotalRows
 
-            string query2 = $"EXECUTE dbo.SP_GroupTotalRows";
+            string query2 = $"EXECUTE SP_GroupTotalRows";
             pagination.TotalRows = _db.Database.SqlQuery<int>(query2).FirstOrDefault();
 
 
@@ -33,28 +33,28 @@ namespace DSmartQB.CORE.Services
 
         public List<GroupListDto> LoadGroups()
         {
-            string query1 = $"EXECUTE dbo.SP_LoadGroups";
+            string query1 = $"EXECUTE SP_LoadGroups";
             var Groups = _db.Database.SqlQuery<GroupListDto>(query1).ToList();
             return Groups;
         }
 
         public ReturnMessage AddGroup(GroupAddDto model)
         {
-            string query = $"EXECUTE dbo.SP_AddGroup '{model.Name}' , '{model.CreatedBy}'";
+            string query = $"EXECUTE SP_AddGroup '{model.Name}' , '{model.CreatedBy}'";
             var user = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
             return user;
         }
 
         public string Update(GroupAddDto model)
         {
-            string query = $"EXECUTE dbo.SP_UpdateGroup '{model.Id}' , '{model.Name}'";
+            string query = $"EXECUTE SP_UpdateGroup '{model.Id}' , '{model.Name}'";
             var user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
         }
 
         public string Delete(string id)
         {
-            string query = $"EXECUTE dbo.SP_DeleteGroup '{id}'";
+            string query = $"EXECUTE SP_DeleteGroup '{id}'";
             var user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
         }
@@ -64,7 +64,7 @@ namespace DSmartQB.CORE.Services
             string user = "";
             foreach (var item in remove)
             {
-                string query = $"EXECUTE dbo.SP_DeleteGroup '{item}'";
+                string query = $"EXECUTE SP_DeleteGroup '{item}'";
                  user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             }
             return user;
@@ -76,7 +76,7 @@ namespace DSmartQB.CORE.Services
 
             foreach (var Id in model.UserId)
             {
-                string query = $"EXECUTE dbo.SP_AssignUserToGroup '{model.GroupId}' , '{Id}'";
+                string query = $"EXECUTE SP_AssignUserToGroup '{model.GroupId}' , '{Id}'";
                 user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             }
             return user;

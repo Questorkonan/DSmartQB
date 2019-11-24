@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Teacher";
 }
-
 <script src="~/assets/js/angular/ng-file-upload.js"></script>
 <div ng-app="myApp" ng-controller="myCtrl">
     <div class="page-header">
@@ -22,11 +21,9 @@
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#mannualModal"><i class="dropdown-icon fe fe-edit"></i> Mannual</a>
                             <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#uploadModal"><i class="dropdown-icon fe fe-upload"></i> Upload</a>
                         </div>
-
                         <button type="button" class="btn btn-danger" ng-disabled="!checked.length" ng-click="deleteSelected(checked)">
                             <i class="fe fe-trash"></i>
                         </button>
-
                     </div>
                     <div class="lds-hourglass" style="margin-left: 35px;" ng-if="loading"></div>
                 </div>
@@ -65,6 +62,7 @@
                                         <div class="dropdown-menu dropdown-menu-right">
                                             <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#updateModal" ng-click="loadUpdate(tchr)"><i class="dropdown-icon fe fe-edit"></i> Edit </a>
                                             <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#changePassModal" ng-click="changePass(tchr)"><i class="dropdown-icon fe fe-refresh-ccw"></i> Change Password </a>
+                                            <a href="javascript:void(0)" class="dropdown-item" data-toggle="modal" data-target="#authorizeModal" ng-click="authorizeRole(tchr)"><i class="dropdown-icon fe fe-lock"></i> Authorized Views </a>
                                             <a href="javascript:void(0)" class="dropdown-item" ng-click="deleteUser(tchr)"><i class="dropdown-icon fe fe-trash"></i> Delete </a>
                                         </div>
                                     </div>
@@ -72,18 +70,13 @@
                             </tr>
                         </tbody>
                     </table>
-
                 </div>
                 <ul uib-pagination total-items="TotalRows" class="d-flex justify-content-center" items-per-page="itemsPerPage" ng-model="currentPage" boundary-links="true" num-pages="numPages" ng-change="pageChanged()"></ul>
-
             </div>
-
         </div>
     </div>
 
-
     @*Create Teacher*@
-
     <div class="modal fade" id="mannualModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -91,11 +84,8 @@
                     <h5 class="modal-title">Create Teacher</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="createTeacher" novalidate>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">First Name</label>
@@ -108,7 +98,6 @@
                                     <input type="text" class="form-control" placeholder="Last Name" ng-model="teacher.lastname" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Email</label>
@@ -121,7 +110,6 @@
                                     <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="teacher.phone" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
@@ -135,11 +123,8 @@
                                 </div>
                             </div>
 
-
                         </div>
-
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -149,9 +134,7 @@
         </div>
     </div>
 
-
     @*Upload Teacher*@
-
     <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -159,25 +142,21 @@
                     <h5 class="modal-title">Upload Teacher</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="attachForm" novalidate>
                         <div class="form-group">
                             <label></label>
                             <a href='@Url.Content("~/Template/Teacher.xlsx")'>
-
                                 <b><span class="fe fe-download"></span> Download</b>
                             </a>
                         </div>
                         <div class="form-group">
                             <label></label>
-
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" ngf-select ng-model="teacherFile" name="groupTemplate" required>
                                 <label class="custom-file-label">Choose file</label>
                             </div>
                         </div>
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -187,10 +166,7 @@
         </div>
     </div>
 
-
-
     @*Update Group*@
-
     <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -198,11 +174,8 @@
                     <h5 class="modal-title">Update <span class="text-indigo">[{{teacher.firstname +' '+ teacher.lastname}}]</span></h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="mannual" novalidate>
-
                         <div class="row">
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">First Name</label>
@@ -227,16 +200,13 @@
                                     <input type="text" class="form-control" ui-mask="(999) 999-99999" ng-model="teacher.phone" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
                                     <label class="form-label">Username</label>
                                     <input type="text" class="form-control" placeholder="Username" ng-model="teacher.username" required>
                                 </div>
                             </div>
-
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -247,9 +217,7 @@
         </div>
     </div>
 
-
     @*Change Password*@
-
     <div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -257,7 +225,6 @@
                     <h5 class="modal-title">Change Password</h5>
                 </div>
                 <div class="modal-body">
-
                     <form name="changePassFrm" novalidate>
                         <div class="form-group">
                             <label>Password</label>
@@ -270,7 +237,6 @@
                         </div>
                         <input type="hidden" name="Id" ng-model="teacher.Id">
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
@@ -280,9 +246,50 @@
         </div>
     </div>
 
+    @*Authorize*@
+
+    <div class="modal fade" id="authorizeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Authorize Views</h5>
+                </div>
+                <div class="modal-body">
+                    <form name="changePassFrm" novalidate>
+                        <div class="form-group">
+                            <label></label>
+                            <table class="table table-hover table-outline table-vcenter text-nowrap card-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th class="text-center">View</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="view in views">
+                                        <td>
+                                            <input type="checkbox" checklist-model="viewschecked" name="Id" checklist-value="view.Id">
+                                        </td>
+                                        <th class="text-center">{{view.Name}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <input type="hidden" name="Id" ng-model="teacher.Id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-disabled="!viewschecked.length" ng-click="authorize(viewschecked,teacher.Id)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
-
 <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function () {
@@ -313,10 +320,12 @@
 
         };
         $scope.checked = [];
+        $scope.viewschecked = [];
         $scope.itemsPerPage = 5;
         $scope.currentPage = 1;
         $scope.TotalRows = 0;
         $scope.teachers = [];
+        $scope.views = [];
         $scope.loading = false;
 
         $scope.dateFormat = 'yyyy-MM-dd';
@@ -329,6 +338,30 @@
         $scope.availableDatePopup = {
             opened: false
         };
+
+
+        $scope.authorize = function (views , teacherId) {
+
+            var model = {
+                Id: teacherId,
+                Views: views
+            }
+
+            var req = {
+                method: 'POST',
+                url: apiurl + "AssignUserView",
+                headers: config.headers,
+                data: model
+            }
+
+            $http(req).then(function (res) {
+                toastr.success('Done..!', "DSmartQB.")
+                $('#authorizeModal').modal('hide');
+            }, function (err) {
+                console.log(err)
+            });
+
+        }
 
         $scope.deleteSelected = function (users) {
 
@@ -382,6 +415,35 @@
         }
 
         $scope.lista(1);
+
+
+        $scope.viewsList = function (curr) {
+            
+            var reqList = {
+                method: 'Get',
+                url: apiurl + 'CheckViews',
+                headers: config.headers
+            }
+
+            $http(reqList).then(function (res) {
+                $scope.views = res.data;
+            }, function (err) {
+                console.log(err)
+            });
+        }
+
+      
+
+
+        $scope.authorizeRole = function (item) {
+
+            $scope.viewsList();
+
+            $scope.teacher = {
+                'Id': item.Id
+            }
+
+        }
 
         $scope.changePass = function (item) {
             $scope.teacher = {

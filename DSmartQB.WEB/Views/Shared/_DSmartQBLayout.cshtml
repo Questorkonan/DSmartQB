@@ -1,4 +1,8 @@
 ﻿@using DSmartQB.WEB.Helpers
+@using DSmartQB.CORE.DTOs
+@{ 
+    List<MenuBinder> Views = Session["Views"] as List<MenuBinder>;
+}
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
@@ -76,48 +80,18 @@
                        
                         <div class="col-lg order-lg-first">
                             <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
-                                @if (User.Identity.IsAuthenticated)
+
+                                <li class="nav-item">
+                                    <a href='@Url.Action("Dashboard", "Admin")' class='@Html.IsActive("Admin", "Dashboard")'><i class="fe fe-home"></i> Dashboard</a>
+                                </li>
+
+                                @foreach (var item in Views)
                                 {
-                                    if (User.IsInRole("Administrator"))
-                                    {
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Dashboard", "Admin")' class='@Html.IsActive("Admin", "Dashboard")'><i class="fe fe-home"></i> Dashboard</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Group", "Admin")' class='@Html.IsActive("Admin", "Group")'><i class="fe fe-airplay"></i> Groups</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Teacher", "Admin")' class='@Html.IsActive("Admin", "Teacher")'><i class="fe fe-users"></i> Teachers</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Student", "Admin")' class='@Html.IsActive("Admin", "Student")'><i class="fe fe-user"></i> Students</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Subject", "Admin")' class='@Html.IsActive("Admin", "Subject")'><i class="fe fe-check-square"></i> Subjects</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Item", "Admin")' class='@Html.IsActive("Admin", "Item")'><i class="fe fe-database"></i> Items</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Exam", "Admin")' class='@Html.IsActive("Admin", "Exam")'><i class="fe fe-file"></i> Exams</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Report", "Admin")' class='@Html.IsActive("Admin", "Report")'><i class="fe fe-image"></i> Reports</a>
-                                        </li>
-                                    }
-                                    if (User.IsInRole("Teacher"))
-                                    {
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Dashboard", "Admin")' class='@Html.IsActive("Admin", "Dashboard")'><i class="fe fe-home"></i> Dashboard</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Item", "Admin")' class='@Html.IsActive("Admin", "Item")'><i class="fe fe-database"></i> Items</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href='@Url.Action("Exam", "Admin")' class='@Html.IsActive("Admin", "Exam")'><i class="fe fe-file"></i> Exams</a>
-                                        </li>
-                                    }
+                                    <li class="nav-item">
+                                        <a href='@Url.Action(item.View, "Admin")' class='@Html.IsActive("Admin", item.View)'><i class="@item.Icon"></i> @item.View</a>
+                                    </li>
                                 }
+
                                 
                             </ul>
                         </div>

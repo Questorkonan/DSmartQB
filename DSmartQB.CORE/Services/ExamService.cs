@@ -13,7 +13,7 @@ namespace DSmartQB.CORE.Services
 
         public SpecifedExam LoadSpecifiedExam(string Id)
         {
-            string query = $"EXECUTE dbo.SP_LoadSpecifiedExam '{Id}'";
+            string query = $"EXECUTE SP_LoadSpecifiedExam '{Id}'";
             var SpecifiedExam = _db.Database.SqlQuery<SpecifedExam>(query).FirstOrDefault();
             return SpecifiedExam;
         }
@@ -24,14 +24,14 @@ namespace DSmartQB.CORE.Services
 
             #region Groups
 
-            string query1 = $"EXECUTE dbo.SP_ListExams {page}";
+            string query1 = $"EXECUTE SP_ListExams {page}";
             pagination.Exams = _db.Database.SqlQuery<ExamBinder>(query1).ToList();
 
             #endregion
 
             #region TotalRows
 
-            string query2 = $"EXECUTE dbo.SP_ExamTotalRows";
+            string query2 = $"EXECUTE SP_ExamTotalRows";
             pagination.TotalRows = _db.Database.SqlQuery<int>(query2).FirstOrDefault();
 
 
@@ -45,7 +45,7 @@ namespace DSmartQB.CORE.Services
             DateTime StartDate = Convert.ToDateTime(model.StartDate);
             string formattedDate = StartDate.ToString("yyyy-MM-dd HH:mm:ss");
 
-            string query = $"EXECUTE dbo.SP_UpdateSetting '{model.Id}','{model.Name}','{model.GroupId}','{model.Duration}','{model.Mark}','{formattedDate}'";
+            string query = $"EXECUTE SP_UpdateSetting '{model.Id}','{model.Name}','{model.GroupId}','{model.Duration}','{model.Mark}','{formattedDate}'";
             string message = _db.Database.SqlQuery<string>(query).FirstOrDefault();
 
             return message;
@@ -57,7 +57,7 @@ namespace DSmartQB.CORE.Services
             DateTime StartDate = Convert.ToDateTime(model.StartDate);
             string formattedDate = StartDate.ToString("yyyy-MM-dd HH:mm:ss");
 
-            string query = $"EXECUTE dbo.SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{formattedDate}'";
+            string query = $"EXECUTE SP_AddExam '{model.Name}',{model.Mark},'{model.Type}','{model.CourseId}','{model.GroupId}',{model.Duration},'{model.Supervisor}','{formattedDate}'";
             message = _db.Database.SqlQuery<ReturnMessage>(query).FirstOrDefault();
 
             return message;
@@ -71,7 +71,7 @@ namespace DSmartQB.CORE.Services
             foreach (var item in Items)
             {
 
-                string getOriginalItem = $"EXECUTE dbo.SP_UpdateDegree '{item.Id}','{item.ExamId}',{item.Degree}";
+                string getOriginalItem = $"EXECUTE SP_UpdateDegree '{item.Id}','{item.ExamId}',{item.Degree}";
                 message = _db.Database.SqlQuery<string>(getOriginalItem).FirstOrDefault();
                 
             }
@@ -91,13 +91,13 @@ namespace DSmartQB.CORE.Services
             foreach (var item in Items)
             {
 
-                string getOriginalItem = $"EXECUTE dbo.SP_OriginalItem '{item.Id}','{item.ExamId}',{item.Degree}";
+                string getOriginalItem = $"EXECUTE SP_OriginalItem '{item.Id}','{item.ExamId}',{item.Degree}";
                 QuestionValidate = _db.Database.SqlQuery<ReturnMessage>(getOriginalItem).FirstOrDefault();
                 if (QuestionValidate.Key == 1)
                 {
                     // Add Answers
 
-                    string applyAnswersArchieve = $"EXECUTE dbo.SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{item.ExamId}'";
+                    string applyAnswersArchieve = $"EXECUTE SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{item.ExamId}'";
                     message = _db.Database.SqlQuery<string>(applyAnswersArchieve).FirstOrDefault();
                 }
 
@@ -114,7 +114,7 @@ namespace DSmartQB.CORE.Services
 
             #region Update Archieve Item
 
-            string question = $"EXECUTE dbo.SP_UpdateArchieveItem '{model.Question.Id}','{model.Question.ExamId}','{model.Question.Stem}'";
+            string question = $"EXECUTE SP_UpdateArchieveItem '{model.Question.Id}','{model.Question.ExamId}','{model.Question.Stem}'";
             _db.Database.SqlQuery<string>(question).FirstOrDefault();
 
             #endregion
@@ -123,7 +123,7 @@ namespace DSmartQB.CORE.Services
             #region  Delete Old Archieve Answers
 
 
-            string remove = $"EXECUTE dbo.SP_RemoveArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}'";
+            string remove = $"EXECUTE SP_RemoveArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}'";
             message = _db.Database.SqlQuery<string>(remove).FirstOrDefault();
 
 
@@ -135,7 +135,7 @@ namespace DSmartQB.CORE.Services
 
             foreach (var answer in model.Answers)
             {
-                string add = $"EXECUTE dbo.SP_AddArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}','{answer.Text}','{answer.Status}'";
+                string add = $"EXECUTE SP_AddArchieveAnswer '{model.Question.Id}','{model.Question.ExamId}','{answer.Text}','{answer.Status}'";
                 _db.Database.SqlQuery<string>(add).FirstOrDefault();
             }
 
@@ -153,23 +153,23 @@ namespace DSmartQB.CORE.Services
             {
                 #region Correct Answer
                 
-                string correctAnswerQuery = $"EXECUTE dbo.SP_GetCorrectAnswer '{Question.Id}'";
+                string correctAnswerQuery = $"EXECUTE SP_GetCorrectAnswer '{Question.Id}'";
                 string CorrectAnswer = _db.Database.SqlQuery<string>(correctAnswerQuery).FirstOrDefault();
 
                 #endregion
 
-                string getGroupId = $"EXECUTE dbo.SP_GetSpecifedGroupId '{model.ExamId}'";
+                string getGroupId = $"EXECUTE SP_GetSpecifedGroupId '{model.ExamId}'";
                 string GroupId = _db.Database.SqlQuery<string>(getGroupId).FirstOrDefault();
 
                 
-                string userIdsQuery = $"EXECUTE dbo.SP_GetUsersByGroup '{GroupId}'";
+                string userIdsQuery = $"EXECUTE SP_GetUsersByGroup '{GroupId}'";
                 UserIds = _db.Database.SqlQuery<string>(userIdsQuery).ToList();
 
                 foreach (var UserId in UserIds)
                 {
                     #region Add Item To Exam
 
-                    string insertIntoExam = $"EXECUTE dbo.SP_InserItemExam '{model.ExamId}','{UserId}','{Question.Id}','{CorrectAnswer}',{Question.Degree},'{Question.Type}'";
+                    string insertIntoExam = $"EXECUTE SP_InserItemExam '{model.ExamId}','{UserId}','{Question.Id}','{CorrectAnswer}',{Question.Degree},'{Question.Type}'";
                     Message = _db.Database.SqlQuery<string>(insertIntoExam).FirstOrDefault();
 
                     #endregion
@@ -186,13 +186,13 @@ namespace DSmartQB.CORE.Services
 
                 #region Online Students
 
-                string onlineStudents = $"EXECUTE dbo.SP_AddOnlineStudents '{model.ExamId}','{UserId}'";
+                string onlineStudents = $"EXECUTE SP_AddOnlineStudents '{model.ExamId}','{UserId}'";
                 Message = _db.Database.SqlQuery<string>(onlineStudents).FirstOrDefault();
 
                 #endregion
             }
 
-            string isPublished = $"EXECUTE dbo.SP_PublishExamStatus '{model.ExamId}'";
+            string isPublished = $"EXECUTE SP_PublishExamStatus '{model.ExamId}'";
             Message = _db.Database.SqlQuery<string>(isPublished).FirstOrDefault();
 
             return Message;
@@ -205,7 +205,7 @@ namespace DSmartQB.CORE.Services
         {
             ExamItemsPagination pagination = new ExamItemsPagination();
 
-            string query1 = $"EXECUTE dbo.SP_PreviewForSelect '{examId}'";
+            string query1 = $"EXECUTE SP_PreviewForSelect '{examId}'";
             pagination.Items = _db.Database.SqlQuery<MannualItems>(query1).ToList();
             
             return pagination;
@@ -217,11 +217,11 @@ namespace DSmartQB.CORE.Services
         {
             ExamItemsPagination pagination = new ExamItemsPagination();
 
-            string query1 = $"EXECUTE dbo.SP_MannualItems {page}";
+            string query1 = $"EXECUTE SP_MannualItems {page}";
             pagination.Items = _db.Database.SqlQuery<MannualItems>(query1).ToList();
 
 
-            string query2 = $"EXECUTE dbo.SP_ExamItemsTotalRows";
+            string query2 = $"EXECUTE SP_ExamItemsTotalRows";
             pagination.TotalRows = _db.Database.SqlQuery<int>(query2).FirstOrDefault();
 
 
@@ -236,7 +236,7 @@ namespace DSmartQB.CORE.Services
 
             List<BluePrintArchieve> archieves = new List<BluePrintArchieve>();
 
-            string query = $"EXECUTE dbo.SP_BluePrint {model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
+            string query = $"EXECUTE SP_BluePrint {model.NoQuestions},{model.Mild},{model.Normal},{model.Hard}";
             archieves = _db.Database.SqlQuery<BluePrintArchieve>(query).ToList();
             
 
@@ -245,13 +245,13 @@ namespace DSmartQB.CORE.Services
             foreach (var item in archieves)
             {
 
-                string getOriginalItem = $"EXECUTE dbo.SP_OriginalItem '{item.Id}','{model.ExamId}',{item.Degree}";
+                string getOriginalItem = $"EXECUTE SP_OriginalItem '{item.Id}','{model.ExamId}',{item.Degree}";
                 QuestionValidate = _db.Database.SqlQuery<ReturnMessage>(getOriginalItem).FirstOrDefault();
                 if (QuestionValidate.Key == 1)
                 {
                     // Add Answers
 
-                    string applyAnswersArchieve = $"EXECUTE dbo.SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{model.ExamId}'";
+                    string applyAnswersArchieve = $"EXECUTE SP_ApplyAnswers '{item.Id}','{QuestionValidate.ReturnId}','{model.ExamId}'";
                     message = _db.Database.SqlQuery<string>(applyAnswersArchieve).FirstOrDefault();
                 }
 
@@ -264,21 +264,21 @@ namespace DSmartQB.CORE.Services
 
         public string DeleteExam(string id)
         {
-            string query = $"EXECUTE dbo.SP_DeleteExam '{id}'";
+            string query = $"EXECUTE SP_DeleteExam '{id}'";
             string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
         }
 
         public string DeleteItemArchieve(string id)
         {
-            string query = $"EXECUTE dbo.SP_DeleteItemArchieve '{id}'";
+            string query = $"EXECUTE SP_DeleteItemArchieve '{id}'";
             string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
         }
 
         public University UniversityLogo()
         {
-            string query = $"EXECUTE dbo.SP_GetLogo";
+            string query = $"EXECUTE SP_GetLogo";
             var Univeristy = _db.Database.SqlQuery<University>(query).FirstOrDefault();
             return Univeristy;
         }
@@ -286,7 +286,7 @@ namespace DSmartQB.CORE.Services
         public List<OnlineStudentsGrid> OnlineStudentsGrid(string Id)
         {
             List<OnlineStudentsGrid> Students = new List<OnlineStudentsGrid>();
-            string query = $"EXECUTE dbo.SP_OnlineStudents '{Id}'";
+            string query = $"EXECUTE SP_OnlineStudents '{Id}'";
             Students = _db.Database.SqlQuery<OnlineStudentsGrid>(query).ToList();
             return Students;
         }
@@ -300,17 +300,17 @@ namespace DSmartQB.CORE.Services
             List<Answer> Answers = new List<Answer>();
 
 
-            string HeaderQuery = $"EXECUTE dbo.SP_GetExamHeader '{Id}'";
+            string HeaderQuery = $"EXECUTE SP_GetExamHeader '{Id}'";
             Header = _db.Database.SqlQuery<ExamHeader>(HeaderQuery).FirstOrDefault();
 
 
-            string query = $"EXECUTE dbo.SP_GetQuestionsByExamId '{Id}'";
+            string query = $"EXECUTE SP_GetQuestionsByExamId '{Id}'";
             Questions = _db.Database.SqlQuery<Question>(query).ToList();
 
             foreach (var item in Questions)
             {
 
-                string AnswersQuery = $"EXECUTE dbo.SP_GetQuestionsAnswersByQuestionId '{item.Id}', '{Id}'";
+                string AnswersQuery = $"EXECUTE SP_GetQuestionsAnswersByQuestionId '{item.Id}', '{Id}'";
                 Answers = _db.Database.SqlQuery<Answer>(AnswersQuery).ToList();
 
                 ExamBody.Add(new ExamBody { Question = item, Answers = Answers });
@@ -329,7 +329,7 @@ namespace DSmartQB.CORE.Services
 
         public string AddUniversitySettings(string name , string path)
         {
-            string query = $"EXECUTE dbo.SP_SheetLogo '{name}','{path}'";
+            string query = $"EXECUTE SP_SheetLogo '{name}','{path}'";
             string user = _db.Database.SqlQuery<string>(query).FirstOrDefault();
             return user;
         }

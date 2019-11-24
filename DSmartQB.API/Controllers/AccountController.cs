@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace DSmartQB.API.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator,Teacher")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AccountController : ApiController
     {
@@ -55,6 +55,12 @@ namespace DSmartQB.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost, Route("api/AssignUserView")]
+        public IHttpActionResult AssignUserView([FromBody]DrawMenu model)
+        {
+            var result = new AccountService().AssignUserView(model);
+            return Ok(result);
+        }
 
 
         [HttpGet, Route("api/ListTeachers")]
@@ -84,6 +90,13 @@ namespace DSmartQB.API.Controllers
         public IHttpActionResult StudentsForGroup([FromUri] string id)
         {
             var result = new AccountService().StudentsForGroup(id);
+            return Ok(result);
+        }
+
+        [HttpGet, Route("api/CheckViews")]
+        public IHttpActionResult CheckViews()
+        {
+            var result = new AccountService().CheckViews();
             return Ok(result);
         }
 
@@ -167,8 +180,8 @@ namespace DSmartQB.API.Controllers
                                     var lastname = ds.Tables[0].Rows[i][1].ToString();
                                     var email = ds.Tables[0].Rows[i][2].ToString();
                                     var password = ds.Tables[0].Rows[i][3].ToString();
-                                    var phone = ds.Tables[0].Rows[i][5].ToString();
-                                    var username = ds.Tables[0].Rows[i][4].ToString();
+                                    var phone = ds.Tables[0].Rows[i][4].ToString();
+                                    var username = ds.Tables[0].Rows[i][5].ToString();
 
 
                                     UserDto model = new UserDto

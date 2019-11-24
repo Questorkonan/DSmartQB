@@ -56,4 +56,22 @@ namespace DSmartQB.CORE.DTOs
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
+    public class DrawMenu
+    {
+        public string Id { get; set; }
+        public string[] Views { get; set; }
+    }
+
+    public class MenuBinder
+    {
+        public string View { get; set; }
+        public string Icon { get; set; }
+    }
+
+    public class Views
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
 }
