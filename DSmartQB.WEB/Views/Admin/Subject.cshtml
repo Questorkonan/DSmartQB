@@ -16,7 +16,7 @@
         var totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
 
 
-        html2canvas($(".canvas_div_pdf")[0], { allowTaint: true }).then(function (canvas) {
+        html2canvas($(".canvas_div_pdf")[0], { allowTaint: true}).then(function (canvas) {
             canvas.getContext('2d');
 
             console.log(canvas.height + "  " + canvas.width);

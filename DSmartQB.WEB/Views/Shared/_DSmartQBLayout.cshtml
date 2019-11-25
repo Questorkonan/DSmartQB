@@ -2,6 +2,10 @@
 @using DSmartQB.CORE.DTOs
 @{ 
     List<MenuBinder> Views = Session["Views"] as List<MenuBinder>;
+    if (!Views.Any())
+    {
+        Views = new List<MenuBinder>();
+    }
 }
 <!doctype html>
 <html lang="en" dir="ltr">
